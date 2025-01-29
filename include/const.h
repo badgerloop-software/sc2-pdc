@@ -1,4 +1,6 @@
-#ifndef __ANALOG_H__
-#define __ANALOG_H__
+#ifndef __CONST_H__
+#define __CONST_H__
 
 #define IO_UPDATE_PERIOD 100000 // us
+
+#endif
