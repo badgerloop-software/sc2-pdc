@@ -3,10 +3,8 @@
 
 #include <Arduino.h>
 #include "adc.h"
-#include "ina281.h"
+#include "const.h"
 #include "STM32TimerInterrupt_Generic.h"
-
-#define IO_UPDATE_PERIOD 100000 // us
 
 float acc_out;
 float regen_brake;
@@ -21,8 +19,8 @@ void initAnalog();
 
 void readAnalog();
 
-void writeAccOut();
+void writeAccOut(float newAccOut);
 
-void writeRegenBrake();
+void writeRegenBrake(float newRegenBrake);
 
 #endif
