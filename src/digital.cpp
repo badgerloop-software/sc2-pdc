@@ -1,5 +1,7 @@
 #include "digital.h"
 #include <Arduino.h>
+
+#include "STM32TimerInterrupt_Generic.h"
 // #include "const.h"
 
 // Ticker to poll input readings at fixed rate
