@@ -5,23 +5,21 @@
 // #include "const.h"
 
 // Ticker to poll input readings at fixed rate
-STM32TimerInterrupt dataReader(TIM15);
+STM32TimerInterrupt digitalReader(TIM7);
 
 void initDigital(){
-    //outputs
     pinMode(MCU_DIR, OUTPUT);
     pinMode(MCU_ECO, OUTPUT);
     pinMode(MCU_MC_ON, OUTPUT);
 
-    //inputs
     pinMode(MCU_SPEED_SIG, INPUT);
     pinMode(PRK_BRK_TELEM, INPUT);
 
     // start the Timer to periodically read IO
-    if(dataReader.attachInterruptInterval(IO_UPDATE_PERIOD, readDigital)) { 
-        printf("starting dataUpdater timer\n");
+    if(digitalReader.attachInterruptInterval(IO_UPDATE_PERIOD, readDigital)) { 
+        printf("starting digitalReader timer\n");
     } else {
-        printf("problem starting dataUpdater timer\n");
+        printf("problem starting digitalReader timer\n");
     }
 }
 

@@ -13,7 +13,7 @@
 #define MCU_SPEED_SIG       PA_8
 #define PRK_BRK_TELEM       PB_4
 
-#define IO_UPDATE_PERIOD    1000000 // 1 second
+#define IO_UPDATE_PERIOD    100000 // 0.1 second
 
 struct Digital_Data {
     bool direction : 1;         // output
