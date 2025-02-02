@@ -1,19 +1,13 @@
 #include <Arduino.h>
-#include "analog.h"
+#include "analogPins.h"
 
-// put function declarations here:
-int myFunction(int, int);
+// put function declarations here:y
 
 void setup() {
   // put your setup code here, to run once:
-  int result = myFunction(2, 3);
+  initAnalog();
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
-}
-
-// put function definitions here:
-int myFunction(int x, int y) {
-  return x + y;
 }

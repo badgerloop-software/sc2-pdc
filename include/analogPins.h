@@ -3,7 +3,7 @@
 
 #include "adc.h"
 #include "const.h"
-
+#include "STM32TimerInterrupt_Generic.h"
 
 void initAnalog();
 
