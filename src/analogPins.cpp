@@ -1,14 +1,5 @@
 #include "analogPins.h"
 
-float acc_out;
-float regen_brake;
-
-float lv_12V_telem;
-float lv_5V_telem;
-float lv_5V_current;
-float current_in_telem;
-float brake_pressure_telem;
-
 // Ticker to poll input readings at a fixed rate
 STM32TimerInterrupt dataUpdater(TIM2);
 
