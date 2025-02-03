@@ -1,17 +1,22 @@
 #ifndef __DIGITAL_H__
 #define __DIGITAL_H__
 
+#include "ina281.h"
+#include "PID.h"
 
 //Define macros for the digital pins
 
 //Outputs
-#define MCU_DIR             PA_6
-#define MCU_ECO             PB_1
-#define MCU_MC_ON           PA_2
+#define MCU_DIR                PA_6
+#define MCU_ECO                PB_1
+#define MCU_MC_DRIVER          PA_2
 
 //Inputs
-#define MCU_SPEED_SIG       PA_8
-#define PRK_BRK_TELEM       PB_4
+#define MCU_SPEED_SIG          PA_8
+#define PRK_BRK_TELEM          PB_4
+
+#define PWM_FREQ         20000   //Change later
+#define NUM_ARRAYS       1
 
 #define IO_UPDATE_PERIOD    100000 // 0.1 second
 

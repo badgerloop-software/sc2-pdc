@@ -1,9 +1,6 @@
 #include <Arduino.h>
-<<<<<<< HEAD
 #include "analogPins.h"
-=======
 #include "digital.h"
->>>>>>> a4927f2 (PR requested changed)
 
 // put function declarations here:y
 
