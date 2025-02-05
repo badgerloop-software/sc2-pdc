@@ -8,31 +8,32 @@
 STM32TimerInterrupt digitalReader(TIM7);
 
 //for PWM
-struct PWM_pin{
-    PinName pwmPin;             
-    uint32_t channel;               // channel to use for PWM
-    HardwareTimer *pwmTimer;        // timer to set PWM output 
-};
+// struct PWM_pin{
+//     PinName pwmPin;             
+//     uint32_t channel;               // channel to use for PWM
+//     HardwareTimer *pwmTimer;        // timer to set PWM output 
+// };
 
-PWM_pin arrayPWM[NUM_ARRAYS] = {
-    {
-        MCU_MC_DRIVER,
-    }
-};
+// PWM_pin arrayPWM[NUM_ARRAYS] = {
+//     {
+//         MCU_MC_DRIVER,
+//     }
+// };
 
 void initDigital(){
     //PWM initialization
-    for (int i = 0; i < NUM_ARRAYS; i++){
-        TIM_TypeDef *Instance = (TIM_TypeDef *)pinmap_peripheral(arrayPWM[i].pwmPin, PinMap_PWM);
-        arrayPWM[i].pwmTimer = new HardwareTimer(Instance);
-        arrayPWM[i].channel = STM_PIN_CHANNEL(pinmap_function(arrayPWM[i].pwmPin, PinMap_PWM));
-        arrayPWM[i].pwmTimer->setPWM(arrayPWM[i].channel, arrayPWM[i].pwmPin, PWM_FREQ, 0);
-    }
+    // for (int i = 0; i < NUM_ARRAYS; i++){
+    //     TIM_TypeDef *Instance = (TIM_TypeDef *)pinmap_peripheral(arrayPWM[i].pwmPin, PinMap_PWM);
+    //     arrayPWM[i].pwmTimer = new HardwareTimer(Instance);
+    //     arrayPWM[i].channel = STM_PIN_CHANNEL(pinmap_function(arrayPWM[i].pwmPin, PinMap_PWM));
+    //     arrayPWM[i].pwmTimer->setPWM(arrayPWM[i].channel, arrayPWM[i].pwmPin, PWM_FREQ, 0);
+    // }
 
 
     //Other pin initialization
     pinMode(MCU_DIR, OUTPUT);
     pinMode(MCU_ECO, OUTPUT);
+    pinMode(MCU_MC_ON, OUTPUT);
 
     pinMode(MCU_SPEED_SIG, INPUT);
     pinMode(PRK_BRK_TELEM, INPUT);
