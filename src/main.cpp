@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include "analogPins.h"
+#include "digitalPins.h"
 
 // put function declarations here:y
 
