@@ -10,10 +10,10 @@
 #include "canPDC.h"
 
 void MCCState();
+void transition();
 MCCStates get_state();
 
 // cruise control variables
 PID *curr_PID;
-PID power_PID, speed_PID;
 
 #endif

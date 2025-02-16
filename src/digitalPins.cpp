@@ -6,7 +6,7 @@
 
 // Ticker to poll input readings at fixed rate
 STM32TimerInterrupt digitalReader(TIM7);
-volatile Digital_Data digital_data;
+volatile Digital_Data digital_data = {false, false, false, false}; // Define and initialize;
 
 void init_digital(){
     //Other pin initialization
