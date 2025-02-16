@@ -4,6 +4,10 @@
 volatile MCCStates mccState = MCCStates::OFF;
 volatile CRUZ_MODE cruzMode = CRUZ_MODE::OFF;
 
+//PID interval is in seconds and macro is in microseconds
+PID power_PID(POWER_D_PARAM, POWER_I_PARAM, POWER_P_PARAM, PID_UPDATE_INTERVAL);
+PID speed_PID(SPEED_D_PARAM, SPEED_I_PARAM, SPEED_P_PARAM, PID_UPDATE_INTERVAL);
+
 volatile float speed_pid_compute = 0.0;
 STM32TimerInterrupt state_updater(TIM7);
 
@@ -17,9 +21,6 @@ volatile float motorSpeedSetpoint;
 // set default state to OFF
 void MCCState(){ 
     mccState = MCCStates::OFF;
-
-    //PID interval is in seconds and macro is in microseconds
-    power_PID = PID(POWER_D_PARAM, POWER_I_PARAM, POWER_P_PARAM, PID_UPDATE_INTERVAL);
 
     // initialize Ticker to run the transition method every pid update interval seconds
     state_updater.attachInterruptInterval(PID_UPDATE_INTERVAL, transition);

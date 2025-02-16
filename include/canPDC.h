@@ -20,4 +20,4 @@ extern volatile bool mc_on;
 #define FORWARD_AND_REVERSE_ID 0x300
 #define MC_ON_ID 0x301
 
-#endif __CAN_PDC_H__
+#endif
