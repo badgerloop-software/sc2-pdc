@@ -17,7 +17,6 @@ struct Digital_Data {
     bool direction : 1;         // output
     bool mc_speed_sig : 1;      // input
     bool eco_mode : 1;          // output
-    bool mcu_mc_on : 1;         // output
     bool park_brake : 1;        // input
 };
 

@@ -12,7 +12,6 @@ void init_digital(){
     //Other pin initialization
     pinMode(MCU_DIR, OUTPUT);
     pinMode(MCU_ECO, OUTPUT);
-    pinMode(MCU_MC_ON, OUTPUT);
 
     pinMode(MCU_SPEED_SIG, INPUT);
     pinMode(PRK_BRK_TELEM, INPUT);
@@ -39,9 +38,4 @@ void set_direction(bool dir){
 void set_eco_mode(bool eco){
     digitalWrite(MCU_ECO, eco);
     digital_data.eco_mode = eco;
-}
-
-void set_mcu_mc_on(bool mc_on){
-    digital_data.mcu_mc_on = mc_on;
-    digitalWrite(MCU_MC_ON, mc_on);
 }
