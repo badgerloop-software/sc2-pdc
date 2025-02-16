@@ -9,7 +9,7 @@ STM32TimerInterrupt state_updater(TIM7);
 
 volatile bool brakeLed = false;
 volatile bool forwardAndReverse = false;
-volatile bool start_state_machine = false;
+volatile bool mc_on = false;
 
 volatile float rpm;
 volatile float motorSpeedSetpoint;
@@ -113,7 +113,7 @@ void transition() {
 
         // OFF state as our default
         default:
-            if (start_state_machine) {
+            if (mc_on) {
                 mccState = MCCStates::PARK;
                 break;
             }
@@ -128,7 +128,7 @@ void transition() {
 
     // use if, else if because we should only switch to 1 state.
     // put higher priority checks up top.
-    if (!start_state_machine) {
+    if (!mc_on) {
         // the motor is off, so go into OFF state
         mccState = MCCStates::OFF;
         writeAccOut(0.0);

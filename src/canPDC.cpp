@@ -5,7 +5,16 @@ volatile Digital_Data digital_data;
 CANPDC::CANPDC(CAN_TypeDef* canPort, CAN_PINS pins, int frequency) : CANManager(canPort, pins, frequency) {};
 
 void CANPDC::readHandler(CAN_message_t msg) {
-    
+    switch(msg.id){
+        case FORWARD_AND_REVERSE_ID:
+            forwardAndReverse = msg.buf[0];
+            break;
+        case MC_ON_ID:
+            mc_on = msg.buf[0];
+            break;
+        default:
+            break;
+    }    
 }
 
 void CANPDC::sendPDCData() {

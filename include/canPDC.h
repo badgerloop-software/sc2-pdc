@@ -14,6 +14,10 @@ class CANPDC : public CANManager {
 
 extern volatile bool brakeLED;
 extern volatile bool forwardAndReverse;
-extern volatile bool start_state_machine;
+extern volatile bool mc_on;
+
+//Macros for the CAN message IDs
+#define FORWARD_AND_REVERSE_ID 0x300
+#define MC_ON_ID 0x301
 
 #endif __CAN_PDC_H__
