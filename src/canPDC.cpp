@@ -1,5 +1,7 @@
 #include "canPDC.h"
 
+volatile Digital_Data digital_data;
+
 CANPDC::CANPDC(CAN_TypeDef* canPort, CAN_PINS pins, int frequency) : CANManager(canPort, pins, frequency) {};
 
 void CANPDC::readHandler(CAN_message_t msg) {

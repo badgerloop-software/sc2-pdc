@@ -12,4 +12,8 @@ class CANPDC : public CANManager {
         void sendPDCData();
 };
 
+extern volatile bool brakeLED;
+extern volatile bool forwardAndReverse;
+extern volatile bool start_state_machine;
+
 #endif __CAN_PDC_H__

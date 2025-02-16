@@ -7,6 +7,7 @@
 #include "analogPins.h"
 #include "PID.h"
 #include "STM32TimerInterrupt_Generic.h"
+#include "canPDC.h"
 
 void MCCState();
 MCCStates get_state();

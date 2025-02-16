@@ -22,6 +22,27 @@ enum class MCCStates : uint8_t {
     CRUISE_SPEED
 };
 
+enum class CRUZ_MODE : uint8_t {
+    OFF,
+    SPEED,
+    POWER,
+};
+
+extern volatile CRUZ_MODE cruzMode;
+extern volatile MCCStates mccState;
+
+#define FORWARD_VALUE 0
+#define REVERSE_VALUE 1
+#define BRAKE_SENSOR_THRESHOLD 0.14 // 0.7/5
+
+///////////////
+// Speed stuff
+///////////////
+
+extern volatile float rpm;
+extern volatile float motorSpeedSetpoint;
+
+#define MIN_MOVING_SPEED 3.0        // speed threshold for idle state
 // PID macros
 
 //Todo: tune these
