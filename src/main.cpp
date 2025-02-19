@@ -1,6 +1,5 @@
 #include <Arduino.h>
 
-
 #define PWM_PIN PA_8
 #define STEP_SIZE 10
 
@@ -19,7 +18,7 @@ void setup(){
     channel = STM_PIN_CHANNEL(pinmap_function(PWM_PIN, PinMap_PWM));
 }
 
-int main()
+void loop()
 {
     float rpm = 0;
 
