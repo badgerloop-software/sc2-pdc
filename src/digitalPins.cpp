@@ -13,6 +13,7 @@ void init_digital(){
     pinMode(MCU_DIR, OUTPUT);
     pinMode(MCU_ECO, OUTPUT);
 
+    pinMode(MC_ON, INPUT);
     pinMode(MCU_SPEED_SIG, INPUT);
     pinMode(PRK_BRK_TELEM, INPUT);
 
@@ -28,6 +29,7 @@ void read_digital(){
     // read all the digital inputs
     digital_data.mc_speed_sig = digitalRead(MCU_SPEED_SIG);
     digital_data.park_brake = digitalRead(PRK_BRK_TELEM);
+    digital_data.mc_on = digitalRead(MC_ON);
 }
 
 void set_direction(bool dir){

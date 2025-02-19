@@ -7,13 +7,14 @@
 //Outputs
 #define MCU_DIR                PA_6
 #define MCU_ECO                PB_1
-#define MCU_MC_ON              PA_2
+#define MC_ON                  PA_10
 
 //Inputs
 #define MCU_SPEED_SIG          PA_8
 #define PRK_BRK_TELEM          PB_4
 
 struct Digital_Data {
+    bool mc_on : 1;             // input  
     bool direction : 1;         // output
     bool mc_speed_sig : 1;      // input
     bool eco_mode : 1;          // output
@@ -31,6 +32,5 @@ void init_digital();
 // Set the value of output pins
 void set_direction(bool dir);
 void set_eco_mode(bool eco);
-void set_mcu_mc_on(bool mc_on);
 
 #endif

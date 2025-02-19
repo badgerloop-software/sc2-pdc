@@ -7,7 +7,6 @@
 
 //Macros for the CAN message IDs
 #define FORWARD_AND_REVERSE_ID 0x300
-#define MC_ON_ID 0x301
 
 class CANPDC : public CANManager {
     public:
