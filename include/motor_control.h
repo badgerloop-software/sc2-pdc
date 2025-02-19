@@ -11,7 +11,7 @@
 
 void MCCState();
 void transition();
-MCCStates get_state();
+PDCStates get_state();
 
 //Speed variables
 extern volatile float rpm;
