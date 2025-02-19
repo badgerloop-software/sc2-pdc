@@ -13,6 +13,10 @@ void MCCState();
 void transition();
 MCCStates get_state();
 
+//Speed variables
+extern volatile float rpm;
+extern volatile float motorSpeedSetpoint;
+
 // cruise control variables
 PID *curr_PID;
 
