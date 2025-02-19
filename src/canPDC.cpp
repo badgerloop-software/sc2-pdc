@@ -1,6 +1,8 @@
 #include "canPDC.h"
 
-volatile bool brakeLED;
+volatile bool brakeLED = false;
+volatile bool forwardAndReverse = false;
+volatile bool mc_on = false;
 
 CANPDC::CANPDC(CAN_TypeDef* canPort, CAN_PINS pins, int frequency) : CANManager(canPort, pins, frequency) {};
 

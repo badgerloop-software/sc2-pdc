@@ -5,6 +5,10 @@
 #include "analogPins.h"
 #include "digitalPins.h"
 
+//Macros for the CAN message IDs
+#define FORWARD_AND_REVERSE_ID 0x300
+#define MC_ON_ID 0x301
+
 class CANPDC : public CANManager {
     public:
         CANPDC(CAN_TypeDef* canPort, CAN_PINS pins, int frequency = DEFAULT_CAN_FREQ);
@@ -15,9 +19,5 @@ class CANPDC : public CANManager {
 extern volatile bool brakeLED;
 extern volatile bool forwardAndReverse;
 extern volatile bool mc_on;
-
-//Macros for the CAN message IDs
-#define FORWARD_AND_REVERSE_ID 0x300
-#define MC_ON_ID 0x301
 
 #endif
