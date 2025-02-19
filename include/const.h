@@ -34,7 +34,7 @@
 //////////////////////
 //State machine stuff
 /////////////////////
-enum class MCCStates : uint8_t {
+enum class PDCStates : uint8_t {
     OFF,
     PARK,
     IDLE,
@@ -51,7 +51,7 @@ enum class CRUZ_MODE : uint8_t {
 };
 
 extern volatile CRUZ_MODE cruzMode;
-extern volatile MCCStates mccState;
+extern volatile PDCStates pdcState;
 
 #define FORWARD_VALUE 0
 #define REVERSE_VALUE 1
