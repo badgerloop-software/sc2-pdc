@@ -1,19 +1,11 @@
-// combined header file of digitalPin.cpp and analogPins.cpp 
-// combined variables / functions given the name hybrid
-
 #ifndef __IO_MANAGER_H__
 #define __IO_MANAGER_H__
 
-// from digitalPins.h
-#include "ina281.h" 
 #include "PID.h" 
-
-// from analogPins.h
 #include "adc.h"
 #include "const.h"
 #include "STM32TimerInterrupt_Generic.h"
 
-// from digitalPins.h
 //Outputs
 #define MCU_DIR                PA_6
 #define MCU_ECO                PB_1
@@ -33,10 +25,8 @@ struct Digital_Data {
 
 extern volatile Digital_Data digital_data;
 
-// from analogPins.h
 extern volatile float acc_out;
 extern volatile float regen_brake;
-
 extern volatile float lv_12V_telem;
 extern volatile float lv_5V_telem;
 extern volatile float lv_5V_current;
@@ -44,20 +34,16 @@ extern volatile float current_in_telem;
 extern volatile float brake_pressure_telem;
 
 // initialize digital and analog pins
-void initHybrid();
+void initIO();
 
 // read digital and analog inputs
-void readHybrid();
+void readIO();
 
-// from digitalPins.h
 // Set the value of output pins
 void set_direction(bool dir);
 void set_eco_mode(bool eco);
 void set_mcu_mc_on(bool mc_on);
-
-// from analogPins.h
 void writeAccOut(float newAccOut);
-
 void writeRegenBrake(float newRegenBrake);
 
 #endif
