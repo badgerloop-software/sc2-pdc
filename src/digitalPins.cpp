@@ -6,14 +6,14 @@
 
 // Ticker to poll input readings at fixed rate
 STM32TimerInterrupt digitalReader(TIM7);
-volatile Digital_Data digital_data;
+volatile Digital_Data digital_data = {false, false, false, false}; // Define and initialize;
 
 void init_digital(){
     //Other pin initialization
     pinMode(MCU_DIR, OUTPUT);
     pinMode(MCU_ECO, OUTPUT);
-    pinMode(MCU_MC_ON, OUTPUT);
 
+    pinMode(MC_ON, INPUT);
     pinMode(MCU_SPEED_SIG, INPUT);
     pinMode(PRK_BRK_TELEM, INPUT);
 
@@ -29,6 +29,7 @@ void read_digital(){
     // read all the digital inputs
     digital_data.mc_speed_sig = digitalRead(MCU_SPEED_SIG);
     digital_data.park_brake = digitalRead(PRK_BRK_TELEM);
+    digital_data.mc_on = digitalRead(MC_ON);
 }
 
 void set_direction(bool dir){
@@ -39,9 +40,4 @@ void set_direction(bool dir){
 void set_eco_mode(bool eco){
     digitalWrite(MCU_ECO, eco);
     digital_data.eco_mode = eco;
-}
-
-void set_mcu_mc_on(bool mc_on){
-    digital_data.mcu_mc_on = mc_on;
-    digitalWrite(MCU_MC_ON, mc_on);
 }

@@ -9,6 +9,7 @@ volatile float lv_5V_telem = 0;
 volatile float lv_5V_current = 0;
 volatile float current_in_telem = 0;
 volatile float brake_pressure_telem = 0;
+volatile float acc_in = 0;
 
 // Ticker to poll input readings at a fixed rate
 STM32TimerInterrupt dataUpdater(TIM2);
@@ -30,6 +31,7 @@ void readAnalog() {
     lv_5V_current = readADC(ADC_CHANNEL_15) * INA180_CURRENT_MULTIPLIER; // PB_0
     current_in_telem = readADC(ADC_CHANNEL_8) * INA180_CURRENT_MULTIPLIER; // PA_3
     brake_pressure_telem = readADC(ADC_CHANNEL_5); // PA_0
+    acc_in = readADC(ADC_CHANNEL_11); // PA_6
 }
 
 void writeAccOut(float newAccOut) {
