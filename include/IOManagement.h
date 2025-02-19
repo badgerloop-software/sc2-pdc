@@ -1,8 +1,10 @@
-#ifndef __DIGITAL_H__
-#define __DIGITAL_H__
+#ifndef __IO_MANAGER_H__
+#define __IO_MANAGER_H__
 
-#include "ina281.h"
-#include "PID.h"
+#include "PID.h" 
+#include "adc.h"
+#include "const.h"
+#include "STM32TimerInterrupt_Generic.h"
 
 //Outputs
 #define MCU_DIR                PA_6
@@ -23,15 +25,26 @@ struct Digital_Data {
 
 extern volatile Digital_Data digital_data;
 
-// read all the digital inputs
-void read_digital();
+extern volatile float acc_out;
+extern volatile float regen_brake;
+extern volatile float lv_12V_telem;
+extern volatile float lv_5V_telem;
+extern volatile float lv_5V_current;
+extern volatile float current_in_telem;
+extern volatile float brake_pressure_telem;
 
-// initialize all the digital pins
-void init_digital();
+// initialize digital and analog pins
+void initIO();
+
+// read digital and analog inputs
+void readIO();
 
 // Set the value of output pins
 void set_direction(bool dir);
 void set_eco_mode(bool eco);
 void set_mcu_mc_on(bool mc_on);
+void writeAccOut(float newAccOut);
+void writeRegenBrake(float newRegenBrake);
 
 #endif
+
