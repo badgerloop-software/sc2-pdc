@@ -1,6 +1,5 @@
 #include <Arduino.h>
-#include "analogPins.h"
-#include "digitalPins.h"
+#include "IOManagement.h"
 #include "const.h"
 #include "canPDC.h"
 

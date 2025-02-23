@@ -3,8 +3,7 @@
 
 #include "Arduino.h"
 #include "const.h"
-#include "digitalPins.h"
-#include "analogPins.h"
+#include "IOManagement.h"
 #include "PID.h"
 #include "STM32TimerInterrupt_Generic.h"
 #include "canPDC.h"
