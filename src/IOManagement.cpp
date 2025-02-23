@@ -1,7 +1,4 @@
 #include "IOManagement.h"
-#include "const.h"
-#include <Arduino.h>
-#include "STM32TimerInterrupt_Generic.h"
 
 volatile Digital_Data digital_data;
 

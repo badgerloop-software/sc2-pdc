@@ -5,6 +5,7 @@
 #include "adc.h"
 #include "const.h"
 #include "STM32TimerInterrupt_Generic.h"
+#include <Arduino.h>
 
 //Outputs
 #define MCU_DIR                PA_6
