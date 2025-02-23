@@ -2,6 +2,7 @@
 
 volatile Digital_Data digital_data;
 
+volatile float acc_in = 0;
 volatile float acc_out = 0;
 volatile float regen_brake = 0;
 volatile float lv_12V_telem = 0;
@@ -37,6 +38,7 @@ void readIO()
     digital_data.mc_speed_sig = digitalRead(MCU_SPEED_SIG);
     digital_data.park_brake = digitalRead(PRK_BRK_TELEM);
 
+    acc_in = readADC(ADC_CHANNEL_11); // PA_6
     lv_12V_telem = readADC(ADC_CHANNEL_6) * 3.3 *  35.1/5.1; // PA_1
     lv_5V_telem = readADC(ADC_CHANNEL_12) * 3.3 * 15.1/5.1; // PA_7
     lv_5V_current = readADC(ADC_CHANNEL_15) * INA180_CURRENT_MULTIPLIER; // PB_0
