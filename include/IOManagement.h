@@ -26,6 +26,7 @@ struct Digital_Data {
 
 extern volatile Digital_Data digital_data;
 
+extern volatile float acc_in;
 extern volatile float acc_out;
 extern volatile float regen_brake;
 extern volatile float lv_12V_telem;

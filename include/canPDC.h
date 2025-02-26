@@ -2,8 +2,10 @@
 #define __CAN_PDC_H__
 
 #include "canmanager.h"
-#include "analogPins.h"
-#include "digitalPins.h"
+#include "IOManagement.h"
+
+//Macros for the CAN message IDs
+#define FORWARD_AND_REVERSE_ID 0x300
 
 class CANPDC : public CANManager {
     public:
@@ -12,4 +14,8 @@ class CANPDC : public CANManager {
         void sendPDCData();
 };
 
-#endif __CAN_PDC_H__
+extern volatile bool brakeLED;
+extern volatile bool forwardAndReverse;
+extern volatile bool mc_on;
+
+#endif
