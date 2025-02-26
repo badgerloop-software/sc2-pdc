@@ -1,6 +1,12 @@
 #ifndef __CONST_H__
 #define __CONST_H__
 
+/**
+ * Debugging Techniques:
+ * 1. Send random data over CAN and verify if you received the same random data
+*/
+#define DEBUG_TECHNIQUE 1
+
 #define IO_UPDATE_PERIOD 100000 // us
 #define PID_UPDATE_INTERVAL IO_UPDATE_PERIOD/1000000 // sec
 

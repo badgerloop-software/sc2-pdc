@@ -8,7 +8,7 @@
 #include "STM32TimerInterrupt_Generic.h"
 #include "canPDC.h"
 
-void PDCState();
+void initPDCState();
 void transition();
 PDCStates get_state();
 

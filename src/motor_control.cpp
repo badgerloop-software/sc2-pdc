@@ -15,7 +15,7 @@ volatile float rpm;
 volatile float motorSpeedSetpoint;
 
 // set default state to OFF
-void PDCState(){ 
+void initPDCState(){ 
     pdcState = PDCStates::OFF;
 
     // initialize Ticker to run the transition method every pid update interval seconds
