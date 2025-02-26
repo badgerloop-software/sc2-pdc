@@ -11,6 +11,9 @@
 #include <time.h>
 
 int counter;
+
+//Counter for debug prints 20 ticks equates to a second
+int counterExpiry = 20;
 CANPDC canBus(CAN1, DEF);
 
 
@@ -35,6 +38,21 @@ void initData() {
   digital_data.mcu_mc_on = rand() % 2;
   digital_data.park_brake = rand() % 2;
 }
+void debugPrint() {
+  Serial.printf("acc_out: %f\n", acc_out);
+  Serial.printf("regen_brake: %f\n", regen_brake);
+  Serial.printf("lv_12V_telem: %f\n", lv_12V_telem);
+  Serial.printf("lv_5V_telem: %f\n", lv_5V_telem);
+  Serial.printf("lv_5V_current: %f\n", lv_5V_current);
+  Serial.printf("current_in_telem: %f\n", current_in_telem);
+  Serial.printf("brake_pressure_telem: %f\n", brake_pressure_telem);
+  Serial.printf("brakeLED: %i\n", brakeLED);
+  Serial.printf("digital_data.direction: %i\n", digital_data.direction);
+  Serial.printf("digital_data.mc_speed_sig: %i\n", digital_data.mc_speed_sig);
+  Serial.printf("digital_data.eco_mode: %i\n", digital_data.eco_mode);
+  Serial.printf("digital_data.mcu_mc_on: %i\n", digital_data.mcu_mc_on);
+  Serial.printf("digital_data.park_brake: %i\n", digital_data.park_brake);
+}
 #endif
 
 
@@ -53,6 +71,15 @@ void setup() {
 }
 
 void loop() {
+  // Display digital and analog values every second (for testing) 
+  if (DEBUG_TECHNIQUE == 1){
+    if (counter >= counterExpiry) {
+      debugPrint();
+      counter = 0;
+    }
+    counter++;
+  }
+
   initData();
   canBus.sendPDCData();
   canBus.runQueue(DATA_SEND_PERIOD);
