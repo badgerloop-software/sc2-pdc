@@ -10,15 +10,15 @@
 #include <stdlib.h>
 #include <time.h>
 
-int counter;
+int counter = 0;
 
 //Counter for debug prints 100 ticks equates to 5 seconds
-int counterExpiry = 100;
+
 CANPDC canBus(CAN1, DEF);
 
 
 #if DEBUG_TECHNIQUE == 1
-void initData() {
+void randomizeData() {
   // Generate a random float between 0 and 100
   acc_out = ((float)rand() / RAND_MAX) * 100;
   regen_brake = ((float)rand() / RAND_MAX) * 100;
@@ -57,10 +57,6 @@ void debugPrint() {
 
 
 void setup() {
-  #if DEBUG_TECNIQUE
-    int counter = 0;
-  #endif
-
   Serial.begin(115200);
   initADC(ADC1); 
   initIO();
@@ -73,14 +69,13 @@ void setup() {
 void loop() {
   // Display digital and analog values every second (for testing) 
   if (DEBUG_TECHNIQUE == 1){
-    if (counter >= counterExpiry) {
+    if (counter >= COUNTER_EXP) {
+      randomizeData();
       debugPrint();
       counter = 0;
     }
     counter++;
   }
-
-  initData();
   canBus.sendPDCData();
   canBus.runQueue(DATA_SEND_PERIOD);
 
