@@ -16,7 +16,4 @@ PDCStates get_state();
 extern volatile float rpm;
 extern volatile float motorSpeedSetpoint;
 
-// cruise control variables
-PID *curr_PID;
-
 #endif

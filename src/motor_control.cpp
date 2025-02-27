@@ -1,6 +1,9 @@
 
 #include "motor_control.h"
 
+// cruise control variables
+PID *curr_PID;
+
 volatile PDCStates pdcState = PDCStates::OFF;
 volatile CRUZ_MODE cruzMode = CRUZ_MODE::OFF;
 
