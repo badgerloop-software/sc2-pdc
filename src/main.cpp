@@ -12,8 +12,8 @@
 
 int counter;
 
-//Counter for debug prints 20 ticks equates to a second
-int counterExpiry = 20;
+//Counter for debug prints 100 ticks equates to 5 seconds
+int counterExpiry = 100;
 CANPDC canBus(CAN1, DEF);
 
 
@@ -83,4 +83,7 @@ void loop() {
   initData();
   canBus.sendPDCData();
   canBus.runQueue(DATA_SEND_PERIOD);
+
+  //Receiving
+  Serial.printf("Received forwardANdReverse: %i\n", forwardAndReverse);
 }
