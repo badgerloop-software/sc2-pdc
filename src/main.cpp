@@ -18,6 +18,10 @@ CANPDC canBus(CAN1, DEF);
 
 
 #if DEBUG_TECHNIQUE == 1
+//Define methods
+void randomizeData();
+void debugPrint();
+
 void randomizeData() {
   // Generate a random float between 0 and 100
   acc_out = ((float)rand() / RAND_MAX) * 100;
@@ -68,17 +72,16 @@ void setup() {
 
 void loop() {
   // Display digital and analog values every second (for testing) 
-  if (DEBUG_TECHNIQUE == 1){
+  #if DEBUG_TECHNIQUE == 1
     if (counter >= COUNTER_EXP) {
       randomizeData();
       debugPrint();
       counter = 0;
+      //Receiving
+      Serial.printf("Received forwardANdReverse: %i\n", forwardAndReverse);
     }
     counter++;
-  }
+  #endif
   canBus.sendPDCData();
   canBus.runQueue(DATA_SEND_PERIOD);
-
-  //Receiving
-  Serial.printf("Received forwardANdReverse: %i\n", forwardAndReverse);
 }
