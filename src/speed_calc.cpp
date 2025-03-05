@@ -6,7 +6,7 @@ volatile float mph = 0;
 
 static unsigned int previousPulses[ARRAY_SIZE];
 
-STM32TimerInterrupt intervalTimer(TIM1); 
+    STM32TimerInterrupt intervalTimer(TIM1); // FIXME? If not working during testing check this
 
 void increment() {
     speedPulses++;
@@ -17,16 +17,16 @@ void calculateSpeed(){
     static int calculationCounter = 0;
     static unsigned int runningSum = 0; 
 
-    // Replaces oldest pulse in pulse counter vec with a new one
+    // Replaces oldest pulse in pulse counter array with a new one
     calculationCounter = (calculationCounter + 1) % ARRAY_SIZE;
     runningSum = runningSum - previousPulses[calculationCounter] + speedPulses;
     previousPulses[calculationCounter] = speedPulses;
     speedPulses = 0;
 
-    // Calculate rpm and mph based on total pulses in previousPulses vector
+    // Calculate rpm and mph based on total pulses in previousPulses array
     float revolutions = runningSum / (float)PULSES_PER_REV;
-    rpm = revolutions / (INTERVAL_MS * ARRAY_SIZE / 60000.0);
-    mph = rpm * WHEEL_CIRCUMFERENCE * 0.00094696;
+    rpm = revolutions / (SPEED_CALC_INTERVAL_MS * ARRAY_SIZE / 60000.0); 
+    mph = rpm * WHEEL_CIRCUMFERENCE * 0.00094696; // (1 / 12 / 5280) * 60
 }
 
 void startSpeedCalculations() {
@@ -34,6 +34,6 @@ void startSpeedCalculations() {
     attachInterrupt(digitalPinToInterrupt(MCU_SPEED_SIG), increment, RISING); 
 
     // Calculates speed every 50 ms/50000 us
-    intervalTimer.attachInterruptInterval(INTERVAL_MS * 1000, calculateSpeed);
+    intervalTimer.attachInterruptInterval(SPEED_CALC_INTERVAL_MS * 1000, calculateSpeed);
 }
 
