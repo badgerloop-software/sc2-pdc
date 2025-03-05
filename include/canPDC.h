@@ -2,8 +2,7 @@
 #define __CAN_PDC_H__
 
 #include "canmanager.h"
-#include "analogPins.h"
-#include "digitalPins.h"
+#include "IOManagement.h"
 
 class CANPDC : public CANManager {
     public:
