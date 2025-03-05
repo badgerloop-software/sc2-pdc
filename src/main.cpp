@@ -64,9 +64,9 @@ void debugPrint() {
 
 void setup() {
   Serial.begin(115200);
-  // initADC(ADC1); 
-  // initIO();
-  // initPDCState();
+
+  initIO();
+  initPDCState();
 
   //initialize random
   srand(time(NULL));

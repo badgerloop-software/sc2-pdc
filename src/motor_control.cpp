@@ -12,7 +12,7 @@ PID power_PID(POWER_D_PARAM, POWER_I_PARAM, POWER_P_PARAM, PID_UPDATE_INTERVAL);
 PID speed_PID(SPEED_D_PARAM, SPEED_I_PARAM, SPEED_P_PARAM, PID_UPDATE_INTERVAL);
 
 volatile float speed_pid_compute = 0.0;
-STM32TimerInterrupt state_updater(TIM7);
+STM32TimerInterrupt state_updater(TIM2);
 
 volatile float rpm;
 volatile float motorSpeedSetpoint;

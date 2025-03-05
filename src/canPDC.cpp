@@ -17,7 +17,7 @@ void CANPDC::readHandler(CAN_message_t msg) {
 }
 
 void CANPDC::sendPDCData() {
-    Serial.printf("message sent: %d\n",this->sendMessage(0x200, (void*)&acc_out, sizeof(float)));
+    // Serial.printf("message sent: %d\n",this->sendMessage(0x200, (void*)&acc_out, sizeof(float)));
     this->sendMessage(0x200, (void*)&acc_out, sizeof(float));
     this->sendMessage(0x201, (void*)&regen_brake, sizeof(float));
     this->sendMessage(0x202, (void*)&lv_12V_telem, sizeof(float));
