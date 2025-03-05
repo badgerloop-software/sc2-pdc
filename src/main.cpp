@@ -10,6 +10,8 @@
 #include <stdlib.h>
 #include <time.h>
 
+#define DEBUG_TECHNIQUE     1
+
 int counter = 0;
 
 //Counter for debug prints 100 ticks equates to 5 seconds
@@ -62,12 +64,13 @@ void debugPrint() {
 
 void setup() {
   Serial.begin(115200);
-  initADC(ADC1); 
-  initIO();
-  initPDCState();
+  // initADC(ADC1); 
+  // initIO();
+  // initPDCState();
 
   //initialize random
   srand(time(NULL));
+  randomizeData();
 }
 
 void loop() {

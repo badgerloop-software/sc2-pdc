@@ -5,7 +5,7 @@
  * Debugging Techniques:
  * 1. Send random data over CAN and verify if you received the same random data
 */
-#define DEBUG_TECHNIQUE     1
+
 #define COUNTER_EXP         100
 
 #define IO_UPDATE_PERIOD 100000 // us
