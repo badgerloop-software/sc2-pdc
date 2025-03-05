@@ -3,51 +3,65 @@
 #include "const.h"
 #include "canPDC.h"
 
+void testLoop();
+void testSetup();
+void testDigitalInputs();
+void testDigitalOutputs();
+void testAnalogInputs();
+void testAnalogOutputs();
+
 CANPDC canBus(CAN1, DEF);
 
 void setup() {
   Serial.begin(115200);
+  while (!Serial);
+  Serial.println("Serial initialized!");
   initIO();
+  testSetup();
 }
 
 void loop() {
   canBus.sendPDCData();
   canBus.runQueue(DATA_SEND_PERIOD);
+  testLoop();
 }
  
 void testDigitalInputs() {
-  printf("TESTING DIGITAL INPUTS\n");
+  Serial.println("TESTING DIGITAL INPUTS");
   
   // PA8 -> D9
-  printf("MCU_SPEED_SIG (PA8): %d\n", digitalRead(MCU_SPEED_SIG));
+  Serial.print("MCU_SPEED_SIG (PA8): ");
+  Serial.println(digitalRead(MCU_SPEED_SIG));
+  
   // PB4 -> D12
-  printf("PRK_BRK_TELEM (PB4): %d\n", digitalRead(PRK_BRK_TELEM));
+  Serial.print("PRK_BRK_TELEM (PB4): ");
+  Serial.println(digitalRead(PRK_BRK_TELEM));
 }
 
 void testDigitalOutputs() {
-  printf("TESTING DIGITAL OUTPUTS\n");
+  Serial.println("TESTING DIGITAL OUTPUTS");
   
   // PA6 -> A5
   set_direction(HIGH);
-  printf("MCU_DIR (PA6) HIGH\n");
+  Serial.println("MCU_DIR (PA6) HIGH");
   delay(5000);
 
   set_direction(LOW);
-  printf("MCU_DIR (PA6) LOW\n");
+  Serial.println("MCU_DIR (PA6) LOW");
   delay(5000);
 
   // PB1 -> D6
   set_eco_mode(HIGH);
-  printf("MCU_ECO (PB1) HIGH\n");
+  Serial.println("MCU_ECO (PB1) HIGH");
   delay(5000);
 
   set_eco_mode(LOW);
-  printf("MCU_ECO (PB1) LOW\n");
+  Serial.println("MCU_ECO (PB1) LOW");
   delay(5000);
 }
 
 void testAnalogInputs() {
-  printf("TESTING ANALOG INPUTS\n");
+  Serial.println("TESTING ANALOG INPUTS");
   
   float lv12V = readADC(ADC_CHANNEL_6) * 3.3;
   float lv5V = readADC(ADC_CHANNEL_12) * 3.3;
@@ -55,63 +69,70 @@ void testAnalogInputs() {
   float current_in = readADC(ADC_CHANNEL_8) * 3.3;
   float brake_pressure = readADC(ADC_CHANNEL_5) * 3.3;
 
-  // ADC6 -> A1
-  printf("LV_12V (ADC6): %.2fV\n", lv12V);
-  // ADC12 -> A6
-  printf("LV_5V (ADC12): %.2fV\n", lv5V);
-  // ADC15 -> D3
-  printf("LV_5V Current (ADC15): %.2fV\n", lv5V_current);
-  // ADC8 -> A2
-  printf("Current In (ADC8): %.2fV\n", current_in);
-  // ADC5 -> A0
-  printf("Brake Pressure (ADC5): %.2fV\n", brake_pressure);
+  Serial.print("LV_12V (ADC6): ");
+  Serial.print(lv12V);
+  Serial.println("V");
+
+  Serial.print("LV_5V (ADC12): ");
+  Serial.print(lv5V);
+  Serial.println("V");
+
+  Serial.print("LV_5V Current (ADC15): ");
+  Serial.print(lv5V_current);
+  Serial.println("V");
+
+  Serial.print("Current In (ADC8): ");
+  Serial.print(current_in);
+  Serial.println("V");
+
+  Serial.print("Brake Pressure (ADC5): ");
+  Serial.print(brake_pressure);
+  Serial.println("V");
 }
 
 void testAnalogOutputs() {
-  printf("TESTING ANALOG OUTPUTS\n");
+  Serial.println("TESTING ANALOG OUTPUTS");
 
   // DAC2 -> A4
-  printf("Acc_Out (DAC2) 0V\n");
+  Serial.println("Acc_Out (DAC2) 0V");
   writeAccOut(0.0);
   delay(5000);
   
-  printf("Acc_Out (DAC2) 1.65V\n");
+  Serial.println("Acc_Out (DAC2) 1.65V");
   writeAccOut(0.5);
   delay(5000);
   
-  printf("Acc_Out (DAC2) 3.3V\n");
+  Serial.println("Acc_Out (DAC2) 3.3V");
   writeAccOut(1.0);
   delay(5000);
 
   // DAC1 -> A3
-  printf("Regen_Brake (DAC1) 0.0V\n");
+  Serial.println("Regen_Brake (DAC1) 0.0V");
   writeRegenBrake(0.0);
   delay(5000);
   
-  printf("Regen_Brake (DAC1) 1.65V\n");
+  Serial.println("Regen_Brake (DAC1) 1.65V");
   writeRegenBrake(0.5);
   delay(5000);
   
-  printf("Regen_Brake (DAC1) 3.3V\n");
+  Serial.println("Regen_Brake (DAC1) 3.3V");
   writeRegenBrake(1.0);
   delay(5000);
 }
 
-  enum TestMode {
+enum TestMode {
   TEST_DIGITAL_INPUTS = 1,
   TEST_DIGITAL_OUTPUTS = 2,
   TEST_ANALOG_INPUTS = 3,
   TEST_ANALOG_OUTPUTS = 4
 };
 
-TestMode currentTest = TEST_DIGITAL_INPUTS;  // Default test mode
-
 void testSetup() {
   initIO();
-  printf("1 - Digital Inputs\n");
-  printf("2 - Digital Outputs\n");
-  printf("3 - Analog Inputs\n");
-  printf("4 - Analog Outputs\n");
+  Serial.println("1 - Digital Inputs");
+  Serial.println("2 - Digital Outputs");
+  Serial.println("3 - Analog Inputs");
+  Serial.println("4 - Analog Outputs");
 }
 
 void testLoop() {
@@ -131,6 +152,7 @@ void testLoop() {
       } 
   }
 }
+
 
 
 

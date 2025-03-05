@@ -8,13 +8,13 @@
 #include <Arduino.h>
 
 //Outputs
-#define MCU_DIR                PA_6
-#define MCU_ECO                PB_1
-#define MCU_MC_ON              PA_2
+#define MCU_DIR                PA6
+#define MCU_ECO                PB1
+#define MCU_MC_ON              PA2
 
 //Inputs
-#define MCU_SPEED_SIG          PA_8
-#define PRK_BRK_TELEM          PB_4
+#define MCU_SPEED_SIG          PA8
+#define PRK_BRK_TELEM          PB4
 
 struct Digital_Data {
     bool direction : 1;         // output

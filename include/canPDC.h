@@ -11,4 +11,5 @@ class CANPDC : public CANManager {
         void sendPDCData();
 };
 
-#endif __CAN_PDC_H__
+#endif 
+//__CAN_PDC_H__
