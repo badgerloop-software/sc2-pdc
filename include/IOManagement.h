@@ -13,12 +13,10 @@
 #define MCU_MC_ON              PA_2
 
 //Inputs
-#define MCU_SPEED_SIG          PA_8
 #define PRK_BRK_TELEM          PB_4
 
 struct Digital_Data {
     bool direction : 1;         // output
-    bool mc_speed_sig : 1;      // input
     bool eco_mode : 1;          // output
     bool mcu_mc_on : 1;         // output
     bool park_brake : 1;        // input
