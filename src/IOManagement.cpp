@@ -61,10 +61,10 @@ void set_mc_on(bool mc_on){
 
 void writeAccOut(float newAccOut) {
     acc_out = newAccOut;
-    analogWrite(PA_5, acc_out);
+    analogWrite(PA5, acc_out);
 }
 
 void writeRegenBrake(float newRegenBrake) {
     regen_brake = newRegenBrake;
-    analogWrite(PA_4, regen_brake);
+    analogWrite(PA4, regen_brake);
 }
