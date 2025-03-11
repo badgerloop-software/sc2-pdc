@@ -17,7 +17,7 @@ STM32TimerInterrupt IOTimer(TIM2);
 void initIO() {
     pinMode(MCU_DIR, OUTPUT);
     pinMode(MCU_ECO, OUTPUT);
-    pinMode(MCU_MC_ON, OUTPUT);
+    pinMode(MC_ON, INPUT);
     pinMode(PRK_BRK_TELEM, INPUT);
 
     initADC(ADC1);
@@ -54,9 +54,9 @@ void set_eco_mode(bool eco){
     digital_data.eco_mode = eco;
 }
 
-void set_mcu_mc_on(bool mc_on){
-    digital_data.mcu_mc_on = mc_on;
-    digitalWrite(MCU_MC_ON, mc_on);
+void set_mc_on(bool mc_on){
+    digital_data.mc_on = mc_on;
+    digitalWrite(MC_ON, mc_on);
 }
 
 void writeAccOut(float newAccOut) {

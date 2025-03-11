@@ -10,15 +10,15 @@
 //Outputs
 #define MCU_DIR                PB7
 #define MCU_ECO                PB1
-#define MCU_MC_ON              PA10
 
 //Inputs
+#define MC_ON                  PA10
 #define PRK_BRK_TELEM          PB4
 
 struct Digital_Data {
     bool direction : 1;         // output
     bool eco_mode : 1;          // output
-    bool mcu_mc_on : 1;         // output
+    bool mc_on : 1;             // input
     bool park_brake : 1;        // input
 };
 
@@ -42,7 +42,6 @@ void readIO();
 // Set the value of output pins
 void set_direction(bool dir);
 void set_eco_mode(bool eco);
-void set_mcu_mc_on(bool mc_on);
 void writeAccOut(float newAccOut);
 void writeRegenBrake(float newRegenBrake);
 
