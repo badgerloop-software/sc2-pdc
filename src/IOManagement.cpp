@@ -32,8 +32,8 @@ void initIO() {
     }
 }
 
-void readIO() 
-{
+void readIO() {
+    digital_data.mc_on = digitalRead(MC_ON);
     digital_data.park_brake = digitalRead(PRK_BRK_TELEM);
 
     acc_in = readADC(ADC_CHANNEL_11); // PA_6
@@ -52,11 +52,6 @@ void set_direction(bool dir){
 void set_eco_mode(bool eco){
     digitalWrite(MCU_ECO, eco);
     digital_data.eco_mode = eco;
-}
-
-void set_mc_on(bool mc_on){
-    digital_data.mc_on = mc_on;
-    digitalWrite(MC_ON, mc_on);
 }
 
 void writeAccOut(float newAccOut) {
