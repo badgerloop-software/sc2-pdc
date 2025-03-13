@@ -46,17 +46,14 @@ void loop()
         if (simRPM < 0) simRPM = 0;
     }
 
-    // Divide by 60 to get rps, multiply by 48 to get ticks per second
-    // Period in ms is 1000 / ticks per second
-    // Roughly equivalent to 1333.33333 / rpm
+    uint32_t frequencyHz = 0; // uint32 because setPWM uses that for frequency param
 
-    float periodMS;
     if (simRPM > 0) {
-        periodMS = 1333.333333 / simRPM;
-        tim->setPWM(channel, PWM_PIN, 1000/periodMS, dutyCycle);
+        frequencyHz = (48 * simRPM) / 60; // 48 pulses per rotation * RPM, divided by 60 seconds to get frequency
+        tim->setPWM(channel, PWM_PIN, frequencyHz, dutyCycle);
     } else {
         tim->setPWM(channel, PWM_PIN, 1, 0);
     }
     
-    Serial.printf("Current frequency: %f Hz\n", 1000/periodMS);
+    Serial.printf("Current frequency: %1u Hz\n", frequencyHz);
 }
