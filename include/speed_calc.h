@@ -11,7 +11,7 @@
 #define PULSES_PER_REV 48
 #define WHEEL_CIRCUMFERENCE 69 // inches
 
-#define MCU_SPEED_SIG PA_8
+#define MCU_SPEED_SIG PA8
 
 void startSpeedCalculation();
 
@@ -19,5 +19,6 @@ void startSpeedCalculation();
 // Starts speed (RPM and MPH) calculations at specified interval
 extern volatile float rpm;
 extern volatile float mph;
+extern volatile unsigned int previousPulses[ARRAY_SIZE];
 
 #endif

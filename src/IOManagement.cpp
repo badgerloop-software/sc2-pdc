@@ -12,7 +12,7 @@ volatile float current_in_telem = 0;
 volatile float brake_pressure_telem = 0;
 
 // Ticker to poll input readings at fixed rate
-STM32TimerInterrupt IOTimer(TIM7);
+STM32TimerInterrupt IOTimer(TIM2);
 
 void initIO() {
     pinMode(MCU_DIR, OUTPUT);
