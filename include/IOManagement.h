@@ -2,6 +2,7 @@
 #define __IO_MANAGER_H__
 
 #include "PID.h" 
+#include "dac.h"
 #include "adc.h"
 #include "const.h"
 #include "STM32TimerInterrupt_Generic.h"

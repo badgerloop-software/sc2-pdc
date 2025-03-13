@@ -22,12 +22,12 @@ void initIO() {
 
     initADC(ADC1);
 
-    if(IOTimer.attachInterruptInterval(IO_UPDATE_PERIOD, readIO))
-    {
+    uint32_t channels[2] = {DAC_CHANNEL_1, DAC_CHANNEL_2};
+    initDAC(DAC1, channels, 2);
+
+    if(IOTimer.attachInterruptInterval(IO_UPDATE_PERIOD, readIO)) {
         printf("starting IO timer\n");
-    }
-    else 
-    {
+    } else {
         printf("problem starting IO timer\n");
     }
 }
@@ -56,10 +56,10 @@ void set_eco_mode(bool eco){
 
 void writeAccOut(float newAccOut) {
     acc_out = newAccOut;
-    analogWrite(PA5, acc_out);
+    writeDAC(DAC_CHANNEL_2, newAccOut); // PA_5
 }
 
 void writeRegenBrake(float newRegenBrake) {
     regen_brake = newRegenBrake;
-    analogWrite(PA4, regen_brake);
+    writeDAC(DAC_CHANNEL_1, newRegenBrake); // PA_4
 }

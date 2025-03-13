@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include "IOManagement.h"
+#include "dac.h"
 #include "const.h"
 #include "canPDC.h"
 #include "speed_calc.h"
@@ -7,6 +8,7 @@
 CANPDC canBus(CAN1, DEF);
 
 uint8_t counter = 0;
+bool digital_output = false;
 
 void setup() {
   Serial.begin(115200);
@@ -35,5 +37,15 @@ void loop() {
     printf("5V current: %f\n", lv_5V_current);
     printf("current in: %f\n", current_in_telem);
     printf("brake pressure: %f\n", brake_pressure_telem);
+
+    // digital outputs
+    digital_output = !digital_output;
+    printf("direction: %d\n", digital_output);
+    set_direction(digital_output);
+    set_eco_mode(!digital_output);
+
+    // analog outputs
+    writeAccOut(0.5);
+    writeRegenBrake(0.75);
   }
 }
