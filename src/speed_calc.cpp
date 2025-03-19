@@ -1,11 +1,10 @@
 #include "speed_calc.h"
-#include <iostream>
 
-volatile int speedPulses = 0;
+volatile uint8_t speedPulses = 0;
 volatile float rpm = 0;
 volatile float mph = 0;
 
-volatile unsigned int previousPulses[ARRAY_SIZE];
+volatile uint8_t previousPulses[ARRAY_SIZE];
 
 STM32TimerInterrupt speedCalcTimer(TIM1);
 
@@ -15,8 +14,8 @@ void increment() {
 
 void calculateSpeed(){
     // Variable to track array update position
-    static int calculationCounter = 0;
-    static unsigned int runningSum = 0; 
+    static uint8_t calculationCounter = 0;
+    static uint16_t runningSum = 0; 
 
     // Replaces oldest pulse in pulse counter array with a new one
     calculationCounter = (calculationCounter + 1) % ARRAY_SIZE;

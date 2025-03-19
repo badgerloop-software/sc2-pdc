@@ -19,6 +19,6 @@ void startSpeedCalculation();
 // Starts speed (RPM and MPH) calculations at specified interval
 extern volatile float rpm;
 extern volatile float mph;
-extern volatile unsigned int previousPulses[ARRAY_SIZE];
+extern volatile uint8_t previousPulses[ARRAY_SIZE];
 
 #endif
