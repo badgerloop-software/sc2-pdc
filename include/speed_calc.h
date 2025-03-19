@@ -6,7 +6,7 @@
 #include "IOManagement.h"
 #include "STM32TimerInterrupt_Generic.h"
 
-#define SPEED_CALC_INTERVAL_MS 50 // ms
+#define SPEED_CALC_INTERVAL_US 50000 // us
 #define ARRAY_SIZE 20 
 #define PULSES_PER_REV 48
 #define WHEEL_CIRCUMFERENCE 69 // inches

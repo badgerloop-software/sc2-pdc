@@ -14,16 +14,5 @@ void setup() {
 
 void loop() {
   canBus.sendPDCData();
-  canBus.runQueue(1000);
-
-  Serial.print("RPM: ");
-  Serial.println(rpm);
-  Serial.print("MPH: ");
-  Serial.println(mph);
-
-  for (int i = 0; i < 20; i++) {
-    printf("%d |", previousPulses[i]);
-  }
-
-  printf("\n");
+  canBus.runQueue(DATA_SEND_PERIOD);
 }
