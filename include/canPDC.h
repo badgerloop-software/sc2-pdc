@@ -3,6 +3,7 @@
 
 #include "canmanager.h"
 #include "IOManagement.h"
+#include "speed_calc.h"
 
 //Macros for the CAN message IDs
 #define FORWARD_AND_REVERSE_ID 0x300

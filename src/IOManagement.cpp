@@ -12,13 +12,12 @@ volatile float current_in_telem = 0;
 volatile float brake_pressure_telem = 0;
 
 // Ticker to poll input readings at fixed rate
-STM32TimerInterrupt IOTimer(TIM7);
+STM32TimerInterrupt IOTimer(TIM2);
 
 void initIO() {
     pinMode(MCU_DIR, OUTPUT);
     pinMode(MCU_ECO, OUTPUT);
     pinMode(MCU_MC_ON, OUTPUT);
-    pinMode(MCU_SPEED_SIG, INPUT);
     pinMode(PRK_BRK_TELEM, INPUT);
 
     initADC(ADC1);
@@ -35,7 +34,6 @@ void initIO() {
 
 void readIO() 
 {
-    digital_data.mc_speed_sig = digitalRead(MCU_SPEED_SIG);
     digital_data.park_brake = digitalRead(PRK_BRK_TELEM);
 
     acc_in = readADC(ADC_CHANNEL_11); // PA_6

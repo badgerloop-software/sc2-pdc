@@ -26,4 +26,5 @@ void CANPDC::sendPDCData() {
     this->sendMessage(0x206, (void*)&brake_pressure_telem, sizeof(float));
     this->sendMessage(0x207, (void*)&digital_data, sizeof(digital_data));
     this->sendMessage(0x20A, (void*)&brakeLED, sizeof(bool));
+    this->sendMessage(0x208, (void*)&mph, sizeof(float));
 }
