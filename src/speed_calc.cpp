@@ -25,7 +25,7 @@ void calculateSpeed(){
 
     // Calculate rpm and mph based on total pulses in previousPulses array
     float revolutions = runningSum / (float)PULSES_PER_REV;
-    rpm = revolutions / (0.00000001666666667 * (SPEED_CALC_INTERVAL_US / 1000) * ARRAY_SIZE); // 1 / 1000000 / 60
+    rpm = revolutions / (ARRAY_SIZE * SPEED_CALC_INTERVAL_US / 1000000.0 / 60.0 ); // revs / time to gather ARRAY_SIZE revs
     mph = rpm * WHEEL_CIRCUMFERENCE * 0.00094696; // (1 / 12 / 5280) * 60
 
 }

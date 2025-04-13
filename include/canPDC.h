@@ -7,6 +7,7 @@
 
 //Macros for the CAN message IDs
 #define FORWARD_AND_REVERSE_ID 0x300
+#define FORWARD_AND_REVERSE_BIT_MASK 0x01
 
 class CANPDC : public CANManager {
     public:
@@ -17,6 +18,5 @@ class CANPDC : public CANManager {
 
 extern volatile bool brakeLED;
 extern volatile bool forwardAndReverse;
-extern volatile bool mc_on;
 
 #endif

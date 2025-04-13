@@ -8,15 +8,30 @@
 #include "STM32TimerInterrupt_Generic.h"
 #include "canPDC.h"
 
+enum class PDCStates : uint8_t {
+    OFF,
+    PARK,
+    IDLE,
+    FORWARD,
+    REVERSE,
+    CRUISE_POWER,
+    CRUISE_SPEED
+};
+
+enum class CRUZ_MODE : uint8_t {
+    OFF,
+    SPEED,
+    POWER,
+};
+
+
 void initPDCState();
 void transition();
-PDCStates get_state();
 
 //Speed variables
 extern volatile float rpm;
 extern volatile float motorSpeedSetpoint;
-
-// cruise control variables
-PID *curr_PID;
+extern volatile CRUZ_MODE cruzMode;
+extern volatile PDCStates pdcState;
 
 #endif

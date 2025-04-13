@@ -4,6 +4,7 @@
 #include "const.h"
 #include "canPDC.h"
 #include "speed_calc.h"
+#include "motor_control.h"
 
 CANPDC canBus(CAN1, DEF);
 
@@ -13,18 +14,47 @@ bool digital_output = false;
 void setup() {
   Serial.begin(115200);
   initIO();
+  initPDCState();
   startSpeedCalculation();
 }
 
 void loop() {
   canBus.sendPDCData();
-  canBus.runQueue(DATA_SEND_PERIOD);
+  canBus.runQueue(50);
   counter++;
-  if (counter >= 10) {
+  if (counter >= 20) {
     counter = 0;
-
     // clear the screen
     printf("\e[1;1H\e[2J");
+
+    // state
+    printf("State: ");
+    switch (pdcState) {
+      case PDCStates::OFF:
+        printf("OFF\n");
+        break;
+      case PDCStates::PARK:
+        printf("PARK\n");
+        break;
+      case PDCStates::IDLE:
+        printf("IDLE\n");
+        break;
+      case PDCStates::FORWARD:
+        printf("FORWARD\n");
+        break;
+      case PDCStates::REVERSE:
+        printf("REVERSE\n");
+        break;
+      case PDCStates::CRUISE_POWER:
+        printf("CRUISE_POWER\n");
+        break;
+      case PDCStates::CRUISE_SPEED:
+        printf("CRUISE_SPEED\n");
+        break;
+      default:
+        printf("unknown\n");
+        break;
+    }
 
     // digital inputs 
     printf("mc_on: %d\n", digital_data.mc_on);
@@ -37,15 +67,7 @@ void loop() {
     printf("5V current: %f\n", lv_5V_current);
     printf("current in: %f\n", current_in_telem);
     printf("brake pressure: %f\n", brake_pressure_telem);
+    printf("speed: %f\n", rpm);
 
-    // digital outputs
-    digital_output = !digital_output;
-    printf("direction: %d\n", digital_output);
-    set_direction(digital_output);
-    set_eco_mode(!digital_output);
-
-    // analog outputs
-    writeAccOut(0.5);
-    writeRegenBrake(0.75);
   }
 }
