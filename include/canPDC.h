@@ -16,7 +16,6 @@ class CANPDC : public CANManager {
         void sendPDCData();
 };
 
-extern volatile bool brakeLED;
 extern volatile bool forwardAndReverse;
 
 #endif

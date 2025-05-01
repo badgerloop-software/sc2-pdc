@@ -21,6 +21,7 @@ struct Digital_Data {
     bool eco_mode : 1;          // output
     bool mc_on : 1;             // input
     bool park_brake : 1;        // input
+    bool brakeLED : 1;          // derived by state machine
 };
 
 extern volatile Digital_Data digital_data;
