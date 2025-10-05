@@ -65,6 +65,8 @@ void debugPrint() {
 void setup() {
   Serial.begin(115200);
 
+  Serial.printf("Starting up...\n");
+
   initIO();
   initPDCState();
 
