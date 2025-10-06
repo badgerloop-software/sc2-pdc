@@ -17,23 +17,23 @@ STM32TimerInterrupt IOTimer(TIM2);
 void initIO() {
     pinMode(MCU_DIR, OUTPUT);
     pinMode(MCU_ECO, OUTPUT);
-    pinMode(MCU_MC_ON, OUTPUT);
+    pinMode(MC_ON, INPUT);
     pinMode(PRK_BRK_TELEM, INPUT);
 
     initADC(ADC1);
 
-    if(IOTimer.attachInterruptInterval(IO_UPDATE_PERIOD, readIO))
-    {
+    uint32_t channels[2] = {DAC_CHANNEL_1, DAC_CHANNEL_2};
+    initDAC(DAC1, channels, 2);
+
+    if(IOTimer.attachInterruptInterval(IO_UPDATE_PERIOD, readIO)) {
         printf("starting IO timer\n");
-    }
-    else 
-    {
+    } else {
         printf("problem starting IO timer\n");
     }
 }
 
-void readIO() 
-{
+void readIO() {
+    digital_data.mc_on = digitalRead(MC_ON);
     digital_data.park_brake = digitalRead(PRK_BRK_TELEM);
 
     acc_in = readADC(ADC_CHANNEL_11); // PA_6
@@ -54,17 +54,12 @@ void set_eco_mode(bool eco){
     digital_data.eco_mode = eco;
 }
 
-void set_mcu_mc_on(bool mc_on){
-    digital_data.mcu_mc_on = mc_on;
-    digitalWrite(MCU_MC_ON, mc_on);
-}
-
 void writeAccOut(float newAccOut) {
     acc_out = newAccOut;
-    analogWrite(PA_5, acc_out);
+    writeDAC(DAC_CHANNEL_2, newAccOut); // PA_5
 }
 
 void writeRegenBrake(float newRegenBrake) {
     regen_brake = newRegenBrake;
-    analogWrite(PA_4, regen_brake);
+    writeDAC(DAC_CHANNEL_1, newRegenBrake); // PA_4
 }
