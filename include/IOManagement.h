@@ -10,7 +10,7 @@
 //Outputs
 #define MCU_DIR                PA6
 #define MCU_ECO                PB1
-#define MCU_MC_ON              PA2
+#define MCU_MC_ON              PA7
 
 //Inputs
 #define MCU_SPEED_SIG          PA8
