@@ -73,10 +73,20 @@ void setup() {
   //initialize random
   srand(time(NULL));
   randomizeData();
+  pinMode(PB6, OUTPUT);
 }
 
 void loop() {
   // Display digital and analog values every second (for testing) 
+
+  digitalWrite(PB6, HIGH);
+
+  delay(500);
+
+  digitalWrite(PB6, LOW);
+
+  delay(500);
+
   #if DEBUG_TECHNIQUE == 1
     if (counter >= COUNTER_EXP) {
       randomizeData();

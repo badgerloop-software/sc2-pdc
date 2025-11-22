@@ -8,9 +8,9 @@
 #include <Arduino.h>
 
 //Outputs
-#define MCU_DIR                PA6
+#define MCU_DIR                LL_PWR_GPIO_BIT_7
 #define MCU_ECO                PB1
-#define MCU_MC_ON              PA7
+#define MCU_MC_ON              PA10
 
 //Inputs
 #define MCU_SPEED_SIG          PA8
