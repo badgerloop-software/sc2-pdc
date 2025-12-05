@@ -18,6 +18,7 @@ void initIO() {
     pinMode(MCU_DIR, OUTPUT);
     pinMode(MCU_ECO, OUTPUT);
     pinMode(MC_ON, INPUT);
+    pinMode(MCU_SPEED_SIG, INPUT);
     pinMode(PRK_BRK_TELEM, INPUT);
 
     initADC(ADC1);
@@ -35,6 +36,7 @@ void initIO() {
 void readIO() {
     digital_data.mc_on = digitalRead(MC_ON);
     digital_data.park_brake = digitalRead(PRK_BRK_TELEM);
+    digital_data.mc_speed_sig = digitalRead(MCU_SPEED_SIG);
 
     acc_in = readADC(ADC_CHANNEL_11); // PA_6
     lv_12V_telem = readADC(ADC_CHANNEL_6) * 3.3 *  35.1/5.1; // PA_1

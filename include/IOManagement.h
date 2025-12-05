@@ -9,19 +9,20 @@
 #include <Arduino.h>
 
 //Outputs
-#define MCU_DIR                PB7
+#define MCU_DIR                LL_PWR_GPIO_BIT_7 // PB_7
 #define MCU_ECO                PB1
 
 //Inputs
 #define MC_ON                  PA10
 #define PRK_BRK_TELEM          PB4
+#define MCU_SPEED_SIG          PA8
 
 struct Digital_Data {
     bool direction : 1;         // output
+    bool mc_speed_sig : 1;      // input
     bool eco_mode : 1;          // output
     bool mc_on : 1;             // input
     bool park_brake : 1;        // input
-    bool brakeLED : 1;          // derived by state machine
 };
 
 extern volatile Digital_Data digital_data;

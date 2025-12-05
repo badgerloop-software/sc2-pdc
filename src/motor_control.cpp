@@ -139,6 +139,5 @@ void transition() {
     if (brake_pressure_telem > BRAKE_SENSOR_THRESHOLD) {
         writeAccOut(0.0);
     }
-    // set brakeLED based on analog brake sensor 
-    digital_data.brakeLED = brake_pressure_telem > BRAKE_SENSOR_THRESHOLD;
+    
 }   
