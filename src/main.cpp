@@ -59,7 +59,7 @@ void loop() {
     // digital inputs 
     printf("mc_on: %d\n", digital_data.mc_on);
     printf("park_brake: %d\n", digital_data.park_brake);
-    printf("Brake LED: %d\n", digital_data.brakeLED);
+    printf("mc_speed_sig: %d\n", digital_data.mc_speed_sig);
     
     // analog inputs
     printf("12V: %f\n", lv_12V_telem);
