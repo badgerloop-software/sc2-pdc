@@ -31,6 +31,8 @@ void initIO() {
     } else {
         printf("problem starting IO timer\n");
     }
+
+    set_eco_mode(true);
 }
 
 void readIO() {
