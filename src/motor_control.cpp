@@ -47,8 +47,9 @@ void transition() {
             // OUTPUT: set acc_out pin based on acc_in from the pedal
             // this allows us to accelerate into REVERSE or FORWARD states
             writeAccOut(acc_in);
-            set_direction(digital_data.direction);
 
+            set_direction(forwardAndReverse);
+            
             // car moving fast, transition to locked direction state
             if (rpm >= MIN_MOVING_SPEED) {
                 if (forwardAndReverse == FORWARD_VALUE) {
@@ -65,6 +66,7 @@ void transition() {
             }
             // OUTPUT: set acc_out pin based on acc_in from the pedal
             writeAccOut(acc_in);
+            set_direction(REVERSE_VALUE);
             break;
 
         case PDCStates::FORWARD:
@@ -84,6 +86,7 @@ void transition() {
             
             // OUTPUT: set acc_out pin based on acc_in from the pedal
             writeAccOut(acc_in);
+            set_direction(FORWARD_VALUE);
             break;
 
         case PDCStates::CRUISE_POWER:

@@ -60,8 +60,8 @@ enum class CRUZ_MODE : uint8_t {
 extern volatile CRUZ_MODE cruzMode;
 extern volatile PDCStates pdcState;
 
-#define FORWARD_VALUE 0
-#define REVERSE_VALUE 1
+#define FORWARD_VALUE 1
+#define REVERSE_VALUE 0
 #define BRAKE_SENSOR_THRESHOLD 0.14 // 0.7/5
 
 ///////////////
