@@ -4,22 +4,30 @@
 /**
  * Debugging Techniques:
  * 1. Send random data over CAN and verify if you received the same random data
-*/
+ */
 
-#define COUNTER_EXP         100
+// Uncomment when building for the can-bounce test board.
+// When defined, GPIO reads for park_brake and mcu_mc_on are skipped
+// so CAN-sourced values from the test board are used instead.
+#define TEST_MODE
+
+#define COUNTER_EXP 100
 
 #define IO_UPDATE_PERIOD 100000 // us
-#define PID_UPDATE_INTERVAL IO_UPDATE_PERIOD/1000000 // sec
+#define PID_UPDATE_INTERVAL                                                    \
+  (IO_UPDATE_PERIOD /                                                          \
+   1000000.0f) // sec, float division to avoid truncation to 0
 
-#define INA180_CURRENT_MULTIPLIER 10 // multiplies analog current telem to convert it into a readable value
+#define INA180_CURRENT_MULTIPLIER                                              \
+  10 // multiplies analog current telem to convert it into a readable value
 
-// How fast to transmit data over CAN in ms (and debug prints if on) 
+// How fast to transmit data over CAN in ms (and debug prints if on)
 #define DATA_SEND_PERIOD 50
 
 ///////////////
 // PID macros
 ///////////////
-//Todo: tune these
+// Todo: tune these
 #define POWER_P_PARAM 0.0
 #define POWER_I_PARAM 0.0
 #define POWER_D_PARAM 0.0
@@ -39,22 +47,22 @@
 #define MAX_OUT 1.0
 
 //////////////////////
-//State machine stuff
+// State machine stuff
 /////////////////////
 enum class PDCStates : uint8_t {
-    OFF,
-    PARK,
-    IDLE,
-    FORWARD,
-    REVERSE,
-    CRUISE_POWER,
-    CRUISE_SPEED
+  OFF,
+  PARK,
+  IDLE,
+  FORWARD,
+  REVERSE,
+  CRUISE_POWER,
+  CRUISE_SPEED
 };
 
 enum class CRUZ_MODE : uint8_t {
-    OFF,
-    SPEED,
-    POWER,
+  OFF,
+  SPEED,
+  POWER,
 };
 
 extern volatile CRUZ_MODE cruzMode;
@@ -68,6 +76,6 @@ extern volatile PDCStates pdcState;
 // Speed stuff
 ///////////////
 
-#define MIN_MOVING_SPEED 3.0        // speed threshold for idle state
+#define MIN_MOVING_SPEED 3.0 // speed threshold for idle state
 
 #endif
