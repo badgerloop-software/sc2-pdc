@@ -5,6 +5,7 @@
 #include "canPDC.h"
 #include "const.h"
 #include "motor_control.h"
+#include "speed_calc.h"
 
 // For random
 #include <stdlib.h>
@@ -36,7 +37,6 @@ void randomizeData() {
   brake_pressure_telem = ((float)rand() / RAND_MAX) * 3.3; // 0–3.3V
 
   // Random digital data
-  digital_data.brake_led = rand() % 2;
   digital_data.direction = rand() % 2;
   digital_data.mc_speed_sig = rand() % 2;
   digital_data.eco_mode = rand() % 2;
@@ -67,6 +67,7 @@ void setup() {
   Serial.printf("Starting up...\n");
   digitalWrite(PB6, HIGH);
   initIO();
+  startSpeedCalculation();
 
 #if DEBUG_TECHNIQUE == 0
   // Production mode: start the state machine
