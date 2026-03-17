@@ -2,7 +2,6 @@
 #include "IOManagement.h"
 
 volatile uint8_t speedPulses = 0;
-volatile float rpm = 0;
 
 volatile uint8_t previousPulses[ARRAY_SIZE];
 

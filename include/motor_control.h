@@ -13,7 +13,6 @@ void transition();
 PDCStates get_state();
 
 //Speed variables
-extern volatile float rpm;
 extern volatile float motorSpeedSetpoint;
 
 #endif

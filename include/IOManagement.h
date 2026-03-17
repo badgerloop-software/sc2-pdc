@@ -36,6 +36,7 @@ extern volatile float lv_5V_current;
 extern volatile float current_in_telem;
 extern volatile float brake_pressure_telem;
 extern volatile float mph;
+extern volatile float rpm;
 
 // initialize digital and analog pins
 void initIO();

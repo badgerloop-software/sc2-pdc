@@ -11,6 +11,7 @@ volatile float lv_5V_current = 0;
 volatile float current_in_telem = 0;
 volatile float brake_pressure_telem = 0;
 volatile float mph = 0;
+volatile float rpm = 0;
 
 // Ticker to poll input readings at fixed rate
 STM32TimerInterrupt IOTimer(TIM7);
@@ -50,8 +51,7 @@ void readIO() {
   uint32_t count = pulseCount;
   pulseCount = 0;
   float interval_min = IO_UPDATE_PERIOD / 60000000.0f; // µs to minutes
-  extern volatile float rpm;
-  rpm = (float)count / PULSES_PER_REV / interval_min;
+  //rpm = (float)count / PULSES_PER_REV / interval_min;
 
   digital_data.mc_speed_sig = digitalRead(MCU_SPEED_SIG);
 
