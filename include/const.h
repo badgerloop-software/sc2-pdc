@@ -11,7 +11,7 @@
 // so CAN-sourced values from the test board are used instead.
 #define TEST_MODE
 
-#define COUNTER_EXP 100
+#define COUNTER_EXP 2
 
 #define IO_UPDATE_PERIOD 100000 // us
 #define PID_UPDATE_INTERVAL                                                    \

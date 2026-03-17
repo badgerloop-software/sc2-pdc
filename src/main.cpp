@@ -73,7 +73,9 @@ void setup() {
   initPDCState();
 #elif DEBUG_TECHNIQUE == 1
   // Random echo mode: seed RNG, no state machine
-  srand(time(NULL));
+  // Many embedded boards don't have a real-time clock, so time(NULL)
+  // can return 0 every boot. Use millis() so the seed varies based on boot time.
+  srand(millis());
   randomizeData();
 #endif
 }
