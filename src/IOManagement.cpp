@@ -51,7 +51,7 @@ void readIO() {
   uint32_t count = pulseCount;
   pulseCount = 0;
   float interval_min = IO_UPDATE_PERIOD / 60000000.0f; // µs to minutes
-  //rpm = (float)count / PULSES_PER_REV / interval_min;
+  // rpm = (float)count / PULSES_PER_REV / interval_min;
 
   digital_data.mc_speed_sig = digitalRead(MCU_SPEED_SIG);
 
@@ -62,14 +62,20 @@ void readIO() {
   digital_data.park_brake = digitalRead(PRK_BRK_TELEM);
 #endif
 
-  // acc_in is sourced from CAN (0x209) via readHandler.
-  // For production use with a direct physical pedal on PA_6, uncomment:
-  // acc_in = readADC(ADC_CHANNEL_11); // PA_6
+#ifndef TEST_MODE
+  // In production, read acc_in from the physical pedal on PA_6.
+  // In TEST_MODE, acc_in is sourced from CAN (0x209) via readHandler.
+  acc_in = readADC(ADC_CHANNEL_11); // PA_6
+#endif
   lv_12V_telem = readADC(ADC_CHANNEL_6) * 3.3 * 35.1 / 5.1;              // PA_1
   lv_5V_telem = readADC(ADC_CHANNEL_12) * 3.3 * 15.1 / 5.1;              // PA_7
   lv_5V_current = readADC(ADC_CHANNEL_15) * INA180_CURRENT_MULTIPLIER;   // PB_0
   current_in_telem = readADC(ADC_CHANNEL_8) * INA180_CURRENT_MULTIPLIER; // PA_3
-  brake_pressure_telem = readADC(ADC_CHANNEL_5);                         // PA_0
+#ifndef TEST_MODE
+  brake_pressure_telem = readADC(ADC_CHANNEL_5); // PA_0
+#endif
+  // In TEST_MODE, brake_pressure_telem stays at 0 (its init value) so floating
+  // ADC noise on the disconnected sensor doesn't trigger the safety override.
 }
 
 void set_direction(bool dir) {
@@ -84,10 +90,10 @@ void set_eco_mode(bool eco) {
 
 void writeAccOut(float newAccOut) {
   acc_out = newAccOut;
-  analogWrite(PA_5, acc_out);
+  writeDAC(PA_5, acc_out);
 }
 
 void writeRegenBrake(float newRegenBrake) {
   regen_brake = newRegenBrake;
-  analogWrite(PA_4, regen_brake);
+  writeDAC(PA_4, regen_brake);
 }

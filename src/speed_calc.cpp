@@ -12,6 +12,13 @@ void increment() {
 }
 
 void calculateSpeed(){
+#ifdef TEST_MODE
+    // In TEST_MODE, rpm is sourced from CAN (0x20A) via the test board.
+    // Skip pulse-based calculation to avoid overwriting it.
+    speedPulses = 0;
+    return;
+#endif
+
     // Variable to track array update position
     static uint8_t calculationCounter = 0;
     static uint16_t runningSum = 0; 

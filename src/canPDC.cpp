@@ -26,6 +26,13 @@ void CANPDC::readHandler(CAN_message_t msg) {
     memcpy((void *)&acc_in, msg.buf, sizeof(float));
     break;
 
+#ifdef TEST_MODE
+  case 0x20A: // rpm — sent by test board (no physical PWM wire during bench
+              // testing)
+    memcpy((void *)&rpm, msg.buf, sizeof(float));
+    break;
+#endif
+
   default:
     break;
   }
