@@ -1,4 +1,5 @@
 #include "IOManagement.h"
+#include "dac.h"
 
 volatile Digital_Data digital_data;
 
