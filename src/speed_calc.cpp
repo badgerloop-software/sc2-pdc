@@ -12,12 +12,8 @@ void increment() {
 }
 
 void calculateSpeed(){
-#ifdef TEST_MODE
-    // In TEST_MODE, rpm is sourced from CAN (0x20A) via the test board.
-    // Skip pulse-based calculation to avoid overwriting it.
-    speedPulses = 0;
-    return;
-#endif
+    // RPM is always derived from physical MC_SPEED_SIG pulses so the state
+    // machine tracks the real motor speed, even when TEST_MODE is active.
 
     // Variable to track array update position
     static uint8_t calculationCounter = 0;

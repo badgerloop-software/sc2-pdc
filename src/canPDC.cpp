@@ -21,15 +21,10 @@ void CANPDC::readHandler(CAN_message_t msg) {
     digital_data.mcu_mc_on = (msg.buf[1] >> 1) & 1;
     break;
 
-  case 0x209: // acc_in — sent by the pedal board (or test board simulating the
-              // pedal)
-    memcpy((void *)&acc_in, msg.buf, sizeof(float));
-    break;
-
 #ifdef TEST_MODE
-  case 0x20A: // rpm — sent by test board (no physical PWM wire during bench
-              // testing)
-    memcpy((void *)&rpm, msg.buf, sizeof(float));
+  case 0x209: // acc_in — sent by test board simulating the pedal.
+              // Only used in TEST_MODE; in production the ADC reading stands.
+    memcpy((void *)&acc_in, msg.buf, sizeof(float));
     break;
 #endif
 
