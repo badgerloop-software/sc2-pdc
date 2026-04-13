@@ -1,5 +1,4 @@
 #include "IOManagement.h"
-#include "dac.h"
 
 volatile Digital_Data digital_data;
 
@@ -29,6 +28,33 @@ void initSpeedCounter() {
   attachInterrupt(digitalPinToInterrupt(MCU_SPEED_SIG), speedPulseISR, RISING);
 }
 
+DAC_HandleTypeDef hdac;
+
+void initDAC() {
+    __HAL_RCC_DAC1_CLK_ENABLE();
+    
+    hdac.Instance = DAC1;
+    HAL_DAC_Init(&hdac);
+
+    DAC_ChannelConfTypeDef config = {0};
+    config.DAC_Trigger = DAC_TRIGGER_NONE;
+    config.DAC_OutputBuffer = DAC_OUTPUTBUFFER_ENABLE;
+    HAL_DAC_ConfigChannel(&hdac, &config, DAC_CHANNEL_1);  // PA4 - regen
+    HAL_DAC_ConfigChannel(&hdac, &config, DAC_CHANNEL_2);  // PA5 - accel
+    
+    HAL_DAC_Start(&hdac, DAC_CHANNEL_1);
+    HAL_DAC_Start(&hdac, DAC_CHANNEL_2);
+
+    // PA5 is the default SPI SCK and may be claimed by the Arduino core.
+    // Explicitly set it to analog mode so the DAC output isn't overridden.
+    GPIO_InitTypeDef GPIO_InitStruct = {0};
+    __HAL_RCC_GPIOA_CLK_ENABLE();
+    GPIO_InitStruct.Pin  = GPIO_PIN_5;
+    GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+}
+
 void initIO() {
   pinMode(MCU_DIR, OUTPUT);
   pinMode(MCU_ECO, OUTPUT);
@@ -36,6 +62,7 @@ void initIO() {
   pinMode(MCU_SPEED_SIG, INPUT);
   pinMode(PRK_BRK_TELEM, INPUT);
 
+  initDAC();
   initADC(ADC1);
   initSpeedCounter();
 
@@ -90,11 +117,19 @@ void set_eco_mode(bool eco) {
 }
 
 void writeAccOut(float newAccOut) {
+  // Clamp to valid DAC command range before converting to integer counts.
+  if (newAccOut < 0.0f) newAccOut = 0.0f;
+  else if (newAccOut > 1.0f) newAccOut = 1.0f;
+
   acc_out = newAccOut;
-  writeDAC(PA_5, acc_out);
+  HAL_DAC_SetValue(&hdac, DAC_CHANNEL_2, DAC_ALIGN_12B_R, (uint32_t)(acc_out * 4095.0f));
 }
 
 void writeRegenBrake(float newRegenBrake) {
+  // Clamp to valid DAC command range before converting to integer counts.
+  if (newRegenBrake < 0.0f) newRegenBrake = 0.0f;
+  else if (newRegenBrake > 1.0f) newRegenBrake = 1.0f;
+
   regen_brake = newRegenBrake;
-  writeDAC(PA_4, regen_brake);
+  HAL_DAC_SetValue(&hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, (uint32_t)(regen_brake * 4095.0f));
 }
