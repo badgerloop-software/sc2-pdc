@@ -122,6 +122,7 @@ void writeAccOut(float newAccOut) {
   else if (newAccOut > 1.0f) newAccOut = 1.0f;
 
   acc_out = newAccOut;
+  printf("acc_out: %f\n", acc_out);
   HAL_DAC_SetValue(&hdac, DAC_CHANNEL_2, DAC_ALIGN_12B_R, (uint32_t)(acc_out * 4095.0f));
 }
 
