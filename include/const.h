@@ -70,7 +70,7 @@ extern volatile PDCStates pdcState;
 
 #define FORWARD_VALUE 1
 #define REVERSE_VALUE 0
-#define BRAKE_SENSOR_THRESHOLD 0.14 // 0.7/5
+#define BRAKE_SENSOR_THRESHOLD 0.30 // 0.14 resting and 0.99 fully pressed
 
 ///////////////
 // Speed stuff
