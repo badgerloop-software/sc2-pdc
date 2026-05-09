@@ -2,6 +2,7 @@
 
 volatile Digital_Data digital_data;
 
+volatile uint16_t acc_in_raw = 0;
 volatile float acc_in = 0;
 volatile float acc_out = 0;
 volatile float regen_brake = 0;
@@ -90,11 +91,7 @@ void readIO() {
   digital_data.park_brake = digitalRead(PRK_BRK_TELEM);
 #endif
 
-#ifndef TEST_MODE
-  // In production, read acc_in from the physical pedal on PA_6.
-  // In TEST_MODE, acc_in is sourced from CAN (0x209) via readHandler.
-  acc_in = readADC(ADC_CHANNEL_11); // PA_6
-#endif
+  // acc_in is sourced from CAN in readHandler (0x302 production, 0x209 test).
   lv_12V_telem = readADC(ADC_CHANNEL_6) * 3.3 * 35.1 / 5.1;              // PA_1
   lv_5V_telem = readADC(ADC_CHANNEL_12) * 3.3 * 15.1 / 5.1;              // PA_7
   lv_5V_current = readADC(ADC_CHANNEL_15) * INA180_CURRENT_MULTIPLIER;   // PB_0

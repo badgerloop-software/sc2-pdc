@@ -2,6 +2,9 @@
 
 volatile bool forwardAndReverse = false;
 
+static constexpr uint16_t THROTTLE_REST_COUNTS = 869U;
+static constexpr uint16_t THROTTLE_FULL_COUNTS = 3228U;
+
 CANPDC::CANPDC(CAN_TypeDef *canPort, CAN_PINS pins, int frequency)
     : CANManager(canPort, pins, frequency) {};
 
@@ -21,9 +24,42 @@ void CANPDC::readHandler(CAN_message_t msg) {
     digital_data.mcu_mc_on = (msg.buf[1] >> 1) & 1;
     break;
 
+  case REGEN_BRAKE_INPUT_ID: { // 0x301 regen brake from steering wheel (normalized 0.0–1.0)
+    if (msg.len >= sizeof(float)) {
+      float regen_val = 0.0f;
+      memcpy((void *)&regen_val, msg.buf, sizeof(float));
+      if (regen_val < 0.0f)
+        regen_val = 0.0f;
+      else if (regen_val > 1.0f)
+        regen_val = 1.0f;
+      writeRegenBrake(regen_val);
+    }
+    break;
+  }
+
+#ifndef TEST_MODE
+  case THROTTLE_INPUT_ID: { // 0x302 uint16 throttle command in production.
+    uint16_t throttle_raw = 0;
+    memcpy((void *)&throttle_raw, msg.buf, sizeof(uint16_t));
+    acc_in_raw = throttle_raw;
+
+    // Normalize using calibrated pedal range and clamp to [0, 1].
+    float normalized =
+        ((float)throttle_raw - (float)THROTTLE_REST_COUNTS) /
+        ((float)THROTTLE_FULL_COUNTS - (float)THROTTLE_REST_COUNTS);
+    if (normalized < 0.0f) {
+      normalized = 0.0f;
+    } else if (normalized > 1.0f) {
+      normalized = 1.0f;
+    }
+    acc_in = normalized;
+    break;
+  }
+#endif
+
 #ifdef TEST_MODE
   case 0x209: // acc_in — sent by test board simulating the pedal.
-              // Only used in TEST_MODE; in production the ADC reading stands.
+              // Only used in TEST_MODE; in production 0x302 is used.
     memcpy((void *)&acc_in, msg.buf, sizeof(float));
     break;
 #endif
@@ -43,6 +79,6 @@ void CANPDC::sendPDCData() {
   this->sendMessage(0x206, (void *)&brake_pressure_telem, sizeof(float));
   this->sendMessage(0x207, (void *)&digital_data, sizeof(digital_data));
   this->sendMessage(0x208, (void *)&mph, sizeof(float));
-  // 0x209 (acc_in) is an INPUT received from the pedal board — do not
+  // 0x209/0x302 are INPUTs received from the pedal/test board — do not
   // re-broadcast.
 }

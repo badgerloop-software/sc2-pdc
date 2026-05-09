@@ -6,6 +6,8 @@
 
 // Macros for the CAN message IDs
 #define FORWARD_AND_REVERSE_ID 0x300
+#define REGEN_BRAKE_INPUT_ID 0x301
+#define THROTTLE_INPUT_ID 0x302
 
 class CANPDC : public CANManager {
 public:

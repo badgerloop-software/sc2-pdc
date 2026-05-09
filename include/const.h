@@ -9,7 +9,7 @@
 // Uncomment when building for the can-bounce test board.
 // When defined, GPIO reads for park_brake and mcu_mc_on are skipped
 // so CAN-sourced values from the test board are used instead.
-#define TEST_MODE
+// #define TEST_MODE
 
 #define COUNTER_EXP 2
 
@@ -70,7 +70,7 @@ extern volatile PDCStates pdcState;
 
 #define FORWARD_VALUE 1
 #define REVERSE_VALUE 0
-#define BRAKE_SENSOR_THRESHOLD 0.30 // 0.14 resting and 0.99 fully pressed
+#define BRAKE_SENSOR_THRESHOLD 0.5 // 0.14 resting and 0.99 fully pressed
 
 ///////////////
 // Speed stuff
