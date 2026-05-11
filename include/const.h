@@ -11,6 +11,10 @@
 // so CAN-sourced values from the test board are used instead.
 // #define TEST_MODE
 
+// Uncomment to enable Serial debug prints. Comment out for production
+// to save CPU cycles and reduce latency.
+// #define DEBUG_PRINTS
+
 #define COUNTER_EXP 2
 
 #define IO_UPDATE_PERIOD 100000 // us

@@ -68,9 +68,13 @@ void initIO() {
   initSpeedCounter();
 
   if (IOTimer.attachInterruptInterval(IO_UPDATE_PERIOD, readIO)) {
+#ifdef DEBUG_PRINTS
     printf("starting IO timer\n");
+#endif
   } else {
+#ifdef DEBUG_PRINTS
     printf("problem starting IO timer\n");
+#endif
   }
 }
 

@@ -78,6 +78,7 @@ void randomizeData() {
 }
 
 void debugPrint() {
+#ifdef DEBUG_PRINTS
   Serial.printf("acc_in: %f\n", acc_in);
   Serial.printf("acc_out: %f\n", acc_out);
   Serial.printf("regen_brake: %f\n", regen_brake);
@@ -92,13 +93,16 @@ void debugPrint() {
   Serial.printf("digital_data.eco_mode: %i\n", digital_data.eco_mode);
   Serial.printf("digital_data.mcu_mc_on: %i\n", digital_data.mcu_mc_on);
   Serial.printf("digital_data.park_brake: %i\n", digital_data.park_brake);
+#endif
 }
 #endif
 
 // setup
 void setup() {
   Serial.begin(115200);
+#ifdef DEBUG_PRINTS
   Serial.printf("Starting up...\n");
+#endif
   digitalWrite(PB6, HIGH);
   initIO();
   startSpeedCalculation();
@@ -129,6 +133,7 @@ void loop() {
 #if DEBUG_TECHNIQUE == 0
   // Production: state machine runs via its timer interrupt.
   // Just send data and process CAN queue.
+#ifdef DEBUG_PRINTS
   Serial.printf(
       "state=%s cruise=%s fr=%u acc_in_raw=%u acc_in=%.3f acc_out=%.3f "
       "regen=%.3f rpm=%.1f mph=%.1f brake=%.3f mcu_on=%u park=%u dir=%u "
@@ -139,6 +144,7 @@ void loop() {
       digital_data.direction, digital_data.eco_mode, digital_data.brake_led);
   Serial.printf("acc_in_raw: %u\n", acc_in_raw);
   Serial.printf("acc_in: %f\n", acc_in);
+#endif
 #elif DEBUG_TECHNIQUE == 1
   // Random echo: periodically regenerate random values
   if (counter >= COUNTER_EXP) {
@@ -146,7 +152,9 @@ void loop() {
     debugPrint();
     counter = 0;
     // Show what we received from the steering wheel / test board
+#ifdef DEBUG_PRINTS
     Serial.printf("Received forwardAndReverse: %i\n", forwardAndReverse);
+#endif
   }
   counter++;
 #endif
