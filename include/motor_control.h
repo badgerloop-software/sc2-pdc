@@ -14,5 +14,6 @@ PDCStates get_state();
 
 //Speed variables
 extern volatile float motorSpeedSetpoint;
+extern volatile bool cruiseArmed;
 
 #endif

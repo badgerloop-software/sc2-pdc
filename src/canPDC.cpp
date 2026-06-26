@@ -1,6 +1,13 @@
 #include "canPDC.h"
 
 volatile bool forwardAndReverse = false;
+volatile bool cruiseEnabled = false;
+volatile bool cruiseSetPulse = false;
+volatile bool cruiseResetPulse = false;
+
+static bool lastCruiseSet = false;
+static bool lastCruiseReset = false;
+static uint8_t lastDriveMode = 0xFF;
 
 static constexpr uint16_t THROTTLE_REST_COUNTS = 869U;
 static constexpr uint16_t THROTTLE_FULL_COUNTS = 3228U;
@@ -16,6 +23,19 @@ void CANPDC::readHandler(CAN_message_t msg) {
     //   bit 3: direction_switch, bit 4: horn, bit 5: crz_mode_a,
     //   bit 6: crz_set, bit 7: crz_reset
     forwardAndReverse = (msg.buf[0] >> 3) & 1; // bit 3 = direction_switch
+    cruiseEnabled = (msg.buf[0] >> 5) & 1;
+
+    bool cruiseSetNow = ((msg.buf[0] >> 6) & 1) != 0;
+    bool cruiseResetNow = ((msg.buf[0] >> 7) & 1) != 0;
+    if (cruiseSetNow && !lastCruiseSet) {
+      cruiseSetPulse = true;
+    }
+    if (cruiseResetNow && !lastCruiseReset) {
+      cruiseResetPulse = true;
+    }
+    lastCruiseSet = cruiseSetNow;
+    lastCruiseReset = cruiseResetNow;
+
     // Byte 1 (testing extension — allows test board to drive these over CAN):
     //   bit 0: park_brake, bit 1: mcu_mc_on
     digital_data.park_brake = msg.buf[1] & 1;
@@ -32,7 +52,7 @@ void CANPDC::readHandler(CAN_message_t msg) {
         regen_val = 0.0f;
       else if (regen_val > 1.0f)
         regen_val = 1.0f;
-      writeRegenBrake(regen_val);
+      regen_in = regen_val;
     }
     break;
   }
@@ -53,6 +73,14 @@ void CANPDC::readHandler(CAN_message_t msg) {
       normalized = 1.0f;
     }
     acc_in = normalized;
+    break;
+  }
+
+  case DRIVE_MODE_INPUT_ID: { // 0x303 eco/pwr from steering wheel (0=Eco, 1=Pwr)
+    if (msg.len >= 1 && msg.buf[0] != lastDriveMode) {
+      lastDriveMode = msg.buf[0];
+      set_eco_mode(lastDriveMode == 0);
+    }
     break;
   }
 #endif

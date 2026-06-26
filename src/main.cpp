@@ -122,28 +122,26 @@ void setup() {
 
 // loop
 void loop() {
-  // Display digital and analog values every second (for testing)
-
-  digitalWrite(PB6, HIGH);
-  delay(500);
-  digitalWrite(PB6, LOW);
-
-  delay(500);
-
 #if DEBUG_TECHNIQUE == 0
   // Production: state machine runs via its timer interrupt.
   // Just send data and process CAN queue.
 #ifdef DEBUG_PRINTS
-  Serial.printf(
-      "state=%s cruise=%s fr=%u acc_in_raw=%u acc_in=%.3f acc_out=%.3f "
-      "regen=%.3f rpm=%.1f mph=%.1f brake=%.3f mcu_on=%u park=%u dir=%u "
-      "eco=%u brake_led=%u\n",
-      pdcStateToString(get_state()), cruzModeToString(cruzMode),
-      forwardAndReverse, acc_in_raw, acc_in, acc_out, regen_brake, rpm, mph,
-      brake_pressure_telem, digital_data.mcu_mc_on, digital_data.park_brake,
-      digital_data.direction, digital_data.eco_mode, digital_data.brake_led);
-  Serial.printf("acc_in_raw: %u\n", acc_in_raw);
-  Serial.printf("acc_in: %f\n", acc_in);
+  {
+    static uint32_t lastDebugMs = 0;
+    uint32_t nowMs = millis();
+    if (nowMs - lastDebugMs >= 1000) {
+      lastDebugMs = nowMs;
+      Serial.printf(
+          "state=%s cruise=%s armed=%u enabled=%u set=%.1f fr=%u acc_in_raw=%u "
+          "acc_in=%.3f acc_out=%.3f regen=%.3f rpm=%.1f mph=%.1f brake=%.3f "
+          "mcu_on=%u park=%u dir=%u eco=%u brake_led=%u\n",
+          pdcStateToString(get_state()), cruzModeToString(cruzMode),
+          cruiseArmed, cruiseEnabled, motorSpeedSetpoint, forwardAndReverse,
+          acc_in_raw, acc_in, acc_out, regen_brake, rpm, mph,
+          brake_pressure_telem, digital_data.mcu_mc_on, digital_data.park_brake,
+          digital_data.direction, digital_data.eco_mode, digital_data.brake_led);
+    }
+  }
 #endif
 #elif DEBUG_TECHNIQUE == 1
   // Random echo: periodically regenerate random values

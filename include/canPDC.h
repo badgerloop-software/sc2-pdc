@@ -8,6 +8,7 @@
 #define FORWARD_AND_REVERSE_ID 0x300
 #define REGEN_BRAKE_INPUT_ID 0x301
 #define THROTTLE_INPUT_ID 0x302
+#define DRIVE_MODE_INPUT_ID 0x303
 
 class CANPDC : public CANManager {
 public:
@@ -17,5 +18,8 @@ public:
 };
 
 extern volatile bool forwardAndReverse;
+extern volatile bool cruiseEnabled;
+extern volatile bool cruiseSetPulse;
+extern volatile bool cruiseResetPulse;
 
 #endif

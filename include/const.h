@@ -13,11 +13,11 @@
 
 // Uncomment to enable Serial debug prints. Comment out for production
 // to save CPU cycles and reduce latency.
-// #define DEBUG_PRINTS
+#define DEBUG_PRINTS
 
 #define COUNTER_EXP 2
 
-#define IO_UPDATE_PERIOD 100000 // us
+#define IO_UPDATE_PERIOD 50000 // us
 #define PID_UPDATE_INTERVAL                                                    \
   (IO_UPDATE_PERIOD /                                                          \
    1000000.0f) // sec, float division to avoid truncation to 0

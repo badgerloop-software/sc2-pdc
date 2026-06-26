@@ -5,6 +5,7 @@ volatile Digital_Data digital_data;
 volatile uint16_t acc_in_raw = 0;
 volatile float acc_in = 0;
 volatile float acc_out = 0;
+volatile float regen_in = 0;
 volatile float regen_brake = 0;
 volatile float lv_12V_telem = 0;
 volatile float lv_5V_telem = 0;
@@ -91,8 +92,8 @@ void readIO() {
 #ifndef TEST_MODE
   // In production, read mc_on and park_brake from physical GPIO.
   // In TEST_MODE these are sourced from CAN (0x300 byte 1) via readHandler.
-  digital_data.mcu_mc_on = digitalRead(MCU_MC_ON);
-  digital_data.park_brake = digitalRead(PRK_BRK_TELEM);
+  digital_data.mcu_mc_on = true; // digitalRead(MCU_MC_ON);
+  digital_data.park_brake = false; // digitalRead(PRK_BRK_TELEM);
 #endif
 
   // acc_in is sourced from CAN in readHandler (0x302 production, 0x209 test).

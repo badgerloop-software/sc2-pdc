@@ -30,6 +30,7 @@ extern volatile Digital_Data digital_data;
 extern volatile uint16_t acc_in_raw;
 extern volatile float acc_in;
 extern volatile float acc_out;
+extern volatile float regen_in;
 extern volatile float regen_brake;
 extern volatile float lv_12V_telem;
 extern volatile float lv_5V_telem;
