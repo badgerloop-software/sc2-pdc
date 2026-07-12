@@ -11,7 +11,8 @@ volatile float lv_12V_telem = 0;
 volatile float lv_5V_telem = 0;
 volatile float lv_5V_current = 0;
 volatile float current_in_telem = 0;
-volatile float brake_pressure_telem = 0;
+volatile bool brake_pressed = false;
+volatile float brake_pressure_telem = 0.0f;
 volatile float mph = 0;
 volatile float rpm = 0;
 
@@ -59,6 +60,7 @@ void initDAC() {
 
 void initIO() {
   pinMode(MCU_DIR, OUTPUT);
+  set_direction(FORWARD_VALUE);
   pinMode(MCU_ECO, OUTPUT);
   pinMode(MCU_MC_ON, INPUT);
   pinMode(MCU_SPEED_SIG, INPUT);
@@ -90,9 +92,6 @@ void readIO() {
   digital_data.mc_speed_sig = digitalRead(MCU_SPEED_SIG);
 
 #ifndef TEST_MODE
-  // In production, read mc_on and park_brake from physical GPIO.
-  // In TEST_MODE these are sourced from CAN (0x300 byte 1) via readHandler.
-  digital_data.mcu_mc_on = true; // digitalRead(MCU_MC_ON);
   digital_data.park_brake = false; // digitalRead(PRK_BRK_TELEM);
 #endif
 
@@ -102,10 +101,11 @@ void readIO() {
   lv_5V_current = readADC(ADC_CHANNEL_15) * INA180_CURRENT_MULTIPLIER;   // PB_0
   current_in_telem = readADC(ADC_CHANNEL_8) * INA180_CURRENT_MULTIPLIER; // PA_3
 #ifndef TEST_MODE
-  brake_pressure_telem = readADC(ADC_CHANNEL_5); // PA_0
+  brake_pressure_telem = readADC(BRAKE_ADC_CHANNEL) * 3.3f;
+  brake_pressed = brake_pressure_telem > BRAKE_PRESSURE_THRESHOLD_V;
+  digital_data.brake_led =
+      brake_pressed || (regen_in >= REGEN_BRAKE_LIGHT_THRESHOLD);
 #endif
-  // In TEST_MODE, brake_pressure_telem stays at 0 (its init value) so floating
-  // ADC noise on the disconnected sensor doesn't trigger the safety override.
 }
 
 void set_direction(bool dir) {

@@ -1,48 +1,26 @@
 #include "canPDC.h"
+#include "const.h"
 
 volatile bool forwardAndReverse = false;
-volatile bool cruiseEnabled = false;
-volatile bool cruiseSetPulse = false;
-volatile bool cruiseResetPulse = false;
 
-static bool lastCruiseSet = false;
-static bool lastCruiseReset = false;
 static uint8_t lastDriveMode = 0xFF;
 
-static constexpr uint16_t THROTTLE_REST_COUNTS = 869U;
-static constexpr uint16_t THROTTLE_FULL_COUNTS = 3228U;
+static constexpr uint16_t THROTTLE_SENT_MAX = 4095U;
 
 CANPDC::CANPDC(CAN_TypeDef *canPort, CAN_PINS pins, int frequency)
     : CANManager(canPort, pins, frequency) {};
 
 void CANPDC::readHandler(CAN_message_t msg) {
   switch (msg.id) {
-  case FORWARD_AND_REVERSE_ID: // 0x300
+  case FORWARD_AND_REVERSE_ID: { // 0x300
     // Byte 0 bit layout per CAN spec:
     //   bit 0: headlight, bit 1: left_blink, bit 2: right_blink,
-    //   bit 3: direction_switch, bit 4: horn, bit 5: crz_mode_a,
-    //   bit 6: crz_set, bit 7: crz_reset
-    forwardAndReverse = (msg.buf[0] >> 3) & 1; // bit 3 = direction_switch
-    cruiseEnabled = (msg.buf[0] >> 5) & 1;
-
-    bool cruiseSetNow = ((msg.buf[0] >> 6) & 1) != 0;
-    bool cruiseResetNow = ((msg.buf[0] >> 7) & 1) != 0;
-    if (cruiseSetNow && !lastCruiseSet) {
-      cruiseSetPulse = true;
-    }
-    if (cruiseResetNow && !lastCruiseReset) {
-      cruiseResetPulse = true;
-    }
-    lastCruiseSet = cruiseSetNow;
-    lastCruiseReset = cruiseResetNow;
-
-    // Byte 1 (testing extension — allows test board to drive these over CAN):
-    //   bit 0: park_brake, bit 1: mcu_mc_on
-    digital_data.park_brake = msg.buf[1] & 1;
-    // mcu_mc_on is also readable from the GPIO (PA10). The CAN value from the
-    // test board overrides the GPIO when the test board is active.
-    digital_data.mcu_mc_on = (msg.buf[1] >> 1) & 1;
+    //   bit 3: direction_switch, bit 4: horn
+    // bit 3 direction_switch: 1 = forward, 0 = reverse (steering wheel)
+    bool forward_selected = ((msg.buf[0] >> 3) & 1) != 0;
+    forwardAndReverse = forward_selected ? FORWARD_VALUE : REVERSE_VALUE;
     break;
+  }
 
   case REGEN_BRAKE_INPUT_ID: { // 0x301 regen brake from steering wheel (normalized 0.0–1.0)
     if (msg.len >= sizeof(float)) {
@@ -63,10 +41,8 @@ void CANPDC::readHandler(CAN_message_t msg) {
     memcpy((void *)&throttle_raw, msg.buf, sizeof(uint16_t));
     acc_in_raw = throttle_raw;
 
-    // Normalize using calibrated pedal range and clamp to [0, 1].
-    float normalized =
-        ((float)throttle_raw - (float)THROTTLE_REST_COUNTS) /
-        ((float)THROTTLE_FULL_COUNTS - (float)THROTTLE_REST_COUNTS);
+    // Steering wheel sends calibrated counts in [0, THROTTLE_SENT_MAX].
+    float normalized = (float)throttle_raw / (float)THROTTLE_SENT_MAX;
     if (normalized < 0.0f) {
       normalized = 0.0f;
     } else if (normalized > 1.0f) {

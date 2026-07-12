@@ -32,23 +32,6 @@ static const char *pdcStateToString(PDCStates state) {
     return "FORWARD";
   case PDCStates::REVERSE:
     return "REVERSE";
-  case PDCStates::CRUISE_POWER:
-    return "CRUISE_POWER";
-  case PDCStates::CRUISE_SPEED:
-    return "CRUISE_SPEED";
-  default:
-    return "UNKNOWN";
-  }
-}
-
-static const char *cruzModeToString(CRUZ_MODE mode) {
-  switch (mode) {
-  case CRUZ_MODE::OFF:
-    return "OFF";
-  case CRUZ_MODE::SPEED:
-    return "SPEED";
-  case CRUZ_MODE::POWER:
-    return "POWER";
   default:
     return "UNKNOWN";
   }
@@ -67,7 +50,8 @@ void randomizeData() {
   lv_5V_telem = ((float)rand() / RAND_MAX) * 5.0;          // 0–5V
   lv_5V_current = ((float)rand() / RAND_MAX) * 3.3;        // 0–3.3V
   current_in_telem = ((float)rand() / RAND_MAX) * 3.3;     // 0–3.3V
-  brake_pressure_telem = ((float)rand() / RAND_MAX) * 3.3; // 0–3.3V
+  brake_pressed = rand() % 2;
+  digital_data.brake_led = brake_pressed;
 
   // Random digital data
   digital_data.direction = rand() % 2;
@@ -86,7 +70,7 @@ void debugPrint() {
   Serial.printf("lv_5V_telem: %f\n", lv_5V_telem);
   Serial.printf("lv_5V_current: %f\n", lv_5V_current);
   Serial.printf("current_in_telem: %f\n", current_in_telem);
-  Serial.printf("brake_pressure_telem: %f\n", brake_pressure_telem);
+  Serial.printf("brake_pressed: %i\n", brake_pressed);
   Serial.printf("brakeLED: %i\n", digital_data.brake_led);
   Serial.printf("digital_data.direction: %i\n", digital_data.direction);
   Serial.printf("digital_data.mc_speed_sig: %i\n", digital_data.mc_speed_sig);
@@ -132,13 +116,13 @@ void loop() {
     if (nowMs - lastDebugMs >= 1000) {
       lastDebugMs = nowMs;
       Serial.printf(
-          "state=%s cruise=%s armed=%u enabled=%u set=%.1f fr=%u acc_in_raw=%u "
-          "acc_in=%.3f acc_out=%.3f regen=%.3f rpm=%.1f mph=%.1f brake=%.3f "
-          "mcu_on=%u park=%u dir=%u eco=%u brake_led=%u\n",
-          pdcStateToString(get_state()), cruzModeToString(cruzMode),
-          cruiseArmed, cruiseEnabled, motorSpeedSetpoint, forwardAndReverse,
+          "state=%s can_dir=%s fr=%u acc_in_raw=%u "
+          "acc_in=%.3f acc_out=%.3f regen=%.3f rpm=%.1f mph=%.1f "
+          "brake=%u brake_v=%.3f park=%u mcu_dir=%u eco=%u brake_led=%u\n",
+          pdcStateToString(get_state()),
+          forwardAndReverse == FORWARD_VALUE ? "Fwd" : "Rev", forwardAndReverse,
           acc_in_raw, acc_in, acc_out, regen_brake, rpm, mph,
-          brake_pressure_telem, digital_data.mcu_mc_on, digital_data.park_brake,
+          brake_pressed, brake_pressure_telem, digital_data.park_brake,
           digital_data.direction, digital_data.eco_mode, digital_data.brake_led);
     }
   }

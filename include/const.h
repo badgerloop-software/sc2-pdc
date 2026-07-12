@@ -7,8 +7,7 @@
  */
 
 // Uncomment when building for the can-bounce test board.
-// When defined, GPIO reads for park_brake and mcu_mc_on are skipped
-// so CAN-sourced values from the test board are used instead.
+// When defined, park_brake is sourced from CAN instead of GPIO.
 // #define TEST_MODE
 
 // Uncomment to enable Serial debug prints. Comment out for production
@@ -59,27 +58,22 @@ enum class PDCStates : uint8_t {
   IDLE,
   FORWARD,
   REVERSE,
-  CRUISE_POWER,
-  CRUISE_SPEED
 };
 
-enum class CRUZ_MODE : uint8_t {
-  OFF,
-  SPEED,
-  POWER,
-};
-
-extern volatile CRUZ_MODE cruzMode;
 extern volatile PDCStates pdcState;
 
-#define FORWARD_VALUE 1
-#define REVERSE_VALUE 0
-#define BRAKE_SENSOR_THRESHOLD 0.5 // 0.14 resting and 0.99 fully pressed
+#define FORWARD_VALUE 0
+#define REVERSE_VALUE 1
 
 ///////////////
 // Speed stuff
 ///////////////
 
 #define MIN_MOVING_SPEED 3.0 // speed threshold for idle state
+
+#define REGEN_BRAKE_LIGHT_THRESHOLD 0.05f // 5% regen turns brake lights on
+
+#define BRAKE_ADC_CHANNEL ADC_CHANNEL_1 // PA0
+#define BRAKE_PRESSURE_THRESHOLD_V 1.65f
 
 #endif

@@ -18,8 +18,5 @@ public:
 };
 
 extern volatile bool forwardAndReverse;
-extern volatile bool cruiseEnabled;
-extern volatile bool cruiseSetPulse;
-extern volatile bool cruiseResetPulse;
 
 #endif

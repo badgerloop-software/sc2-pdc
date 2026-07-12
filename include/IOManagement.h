@@ -15,6 +15,7 @@
 #define MCU_MC_ON PA10
 #define MCU_SPEED_SIG PA8
 #define PRK_BRK_TELEM PB4
+#define BRAKE_TELEM PA0
 
 struct Digital_Data {
   bool direction : 1;    // output
@@ -22,7 +23,7 @@ struct Digital_Data {
   bool eco_mode : 1;     // output
   bool mcu_mc_on : 1;    // input (physical motor controller key switch)
   bool park_brake : 1;   // input (sourced from CAN when test board is used)
-  bool brake_led : 1;    // output (derived from brake_pressure_telem)
+  bool brake_led : 1;    // output (pedal brake or regen >= threshold)
 };
 
 extern volatile Digital_Data digital_data;
@@ -36,6 +37,7 @@ extern volatile float lv_12V_telem;
 extern volatile float lv_5V_telem;
 extern volatile float lv_5V_current;
 extern volatile float current_in_telem;
+extern volatile bool brake_pressed;
 extern volatile float brake_pressure_telem;
 extern volatile float mph;
 extern volatile float rpm;
