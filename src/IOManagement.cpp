@@ -1,5 +1,25 @@
 #include "IOManagement.h"
 
+#ifdef DEBUG_PRINTS
+static void agentDebugLog(const char *hypothesisId, const char *location,
+                          const char *message, uint16_t ch1Raw,
+                          uint16_t ch5Raw, uint16_t arduinoRaw,
+                          uint32_t pa0Mode, uint32_t pa0Pupd,
+                          uint32_t pa0Idr, uint32_t pa0Odr,
+                          uint32_t brakeDigital, float brakeV) {
+  // #region agent log
+  Serial.printf(
+      "{\"sessionId\":\"03e5a9\",\"hypothesisId\":\"%s\",\"location\":\"%s\","
+      "\"message\":\"%s\",\"data\":{\"ch1Raw\":%u,\"ch5Raw\":%u,"
+      "\"arduinoRaw\":%u,\"pa0GpioMode\":%lu,\"pa0Pupd\":%lu,"
+      "\"pa0Idr\":%lu,\"pa0Odr\":%lu,\"brakeDigital\":%lu,\"brakeV\":%.4f},"
+      "\"timestamp\":%lu}\n",
+      hypothesisId, location, message, ch1Raw, ch5Raw, arduinoRaw, pa0Mode,
+      pa0Pupd, pa0Idr, pa0Odr, brakeDigital, brakeV, millis());
+  // #endregion
+}
+#endif
+
 volatile Digital_Data digital_data;
 
 volatile uint16_t acc_in_raw = 0;
@@ -73,6 +93,15 @@ void initIO() {
   if (IOTimer.attachInterruptInterval(IO_UPDATE_PERIOD, readIO)) {
 #ifdef DEBUG_PRINTS
     printf("starting IO timer\n");
+    {
+      uint32_t pa0Mode = (GPIOA->MODER >> 0) & 0x3U;
+      uint32_t pa0Pupd = (GPIOA->PUPDR >> 0) & 0x3U;
+      uint32_t pa0Idr = (GPIOA->IDR >> 0) & 0x1U;
+      uint32_t pa0Odr = (GPIOA->ODR >> 0) & 0x1U;
+      agentDebugLog("B", "IOManagement.cpp:initIO", "pa0_gpio_at_boot", 0, 0,
+                    0, pa0Mode, pa0Pupd, pa0Idr, pa0Odr,
+                    (uint32_t)digitalRead(BRAKE_TELEM), 0.0f);
+    }
 #endif
   } else {
 #ifdef DEBUG_PRINTS
@@ -105,6 +134,30 @@ void readIO() {
   brake_pressed = brake_pressure_telem > BRAKE_PRESSURE_THRESHOLD_V;
   digital_data.brake_led =
       brake_pressed || (regen_in >= REGEN_BRAKE_LIGHT_THRESHOLD);
+
+#ifdef DEBUG_PRINTS
+  {
+    static uint32_t lastAgentLogMs = 0;
+    uint32_t nowMs = millis();
+    if (nowMs - lastAgentLogMs >= 1000) {
+      lastAgentLogMs = nowMs;
+      uint16_t ch1Raw = readADCRaw(ADC_CHANNEL_1);
+      uint16_t ch5Raw = readADCRaw(ADC_CHANNEL_5);
+      uint16_t arduinoRaw = (uint16_t)analogRead(BRAKE_TELEM);
+      uint32_t pa0Mode = (GPIOA->MODER >> 0) & 0x3U;
+      uint32_t pa0Pupd = (GPIOA->PUPDR >> 0) & 0x3U;
+      uint32_t pa0Idr = (GPIOA->IDR >> 0) & 0x1U;
+      uint32_t pa0Odr = (GPIOA->ODR >> 0) & 0x1U;
+      uint32_t brakeDigital = (uint32_t)digitalRead(BRAKE_TELEM);
+      agentDebugLog("A", "IOManagement.cpp:readIO", "brake_adc_compare",
+                    ch1Raw, ch5Raw, arduinoRaw, pa0Mode, pa0Pupd, pa0Idr,
+                    pa0Odr, brakeDigital, brake_pressure_telem);
+      agentDebugLog("F", "IOManagement.cpp:readIO", "brake_digital_compare",
+                    ch1Raw, ch5Raw, arduinoRaw, pa0Mode, pa0Pupd, pa0Idr,
+                    pa0Odr, brakeDigital, brake_pressure_telem);
+    }
+  }
+#endif
 #endif
 }
 
