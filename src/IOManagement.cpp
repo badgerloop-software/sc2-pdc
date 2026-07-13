@@ -141,8 +141,9 @@ void readIO() {
     uint32_t nowMs = millis();
     if (nowMs - lastAgentLogMs >= 1000) {
       lastAgentLogMs = nowMs;
-      uint16_t ch1Raw = readADCRaw(ADC_CHANNEL_1);
-      uint16_t ch5Raw = readADCRaw(ADC_CHANNEL_5);
+      // Use stock readADC() only — do not modify embedded-pio.
+      uint16_t ch1Raw = (uint16_t)(readADC(ADC_CHANNEL_1) * ADC_MAX_VALUE + 0.5f);
+      uint16_t ch5Raw = (uint16_t)(readADC(ADC_CHANNEL_5) * ADC_MAX_VALUE + 0.5f);
       uint16_t arduinoRaw = (uint16_t)analogRead(BRAKE_TELEM);
       uint32_t pa0Mode = (GPIOA->MODER >> 0) & 0x3U;
       uint32_t pa0Pupd = (GPIOA->PUPDR >> 0) & 0x3U;
