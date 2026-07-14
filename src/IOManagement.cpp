@@ -16,6 +16,22 @@ volatile float brake_pressure_telem = 0.0f;
 volatile float mph = 0;
 volatile float rpm = 0;
 
+#ifdef DEBUG_PRINTS
+static void agentDebugLogBrakeDigital(uint32_t dig, uint32_t mode, uint32_t pupd,
+                                      uint32_t idr) {
+  // #region agent log
+  Serial.printf(
+      "{\"sessionId\":\"03e5a9\",\"runId\":\"digital-pd\",\"hypothesisId\":\"H\","
+      "\"location\":\"IOManagement.cpp:readIO\",\"message\":\"brake_digital\","
+      "\"data\":{\"brakeDigital\":%lu,\"pa0GpioMode\":%lu,\"pa0Pupd\":%lu,"
+      "\"pa0Idr\":%lu,\"brakePressed\":%u,\"brakeTelem\":%.3f},"
+      "\"timestamp\":%lu}\n",
+      dig, mode, pupd, idr, (unsigned)brake_pressed, brake_pressure_telem,
+      millis());
+  // #endregion
+}
+#endif
+
 // Ticker to poll input readings at fixed rate
 STM32TimerInterrupt IOTimer(TIM7);
 
@@ -65,6 +81,8 @@ void initIO() {
   pinMode(MCU_MC_ON, INPUT);
   pinMode(MCU_SPEED_SIG, INPUT);
   pinMode(PRK_BRK_TELEM, INPUT);
+  // PCB missing external pulldown; use MCU internal pulldown on PA0.
+  pinMode(BRAKE_TELEM, INPUT_PULLDOWN);
 
   initDAC();
   initADC(ADC1);
@@ -101,10 +119,26 @@ void readIO() {
   lv_5V_current = readADC(ADC_CHANNEL_15) * INA180_CURRENT_MULTIPLIER;   // PB_0
   current_in_telem = readADC(ADC_CHANNEL_8) * INA180_CURRENT_MULTIPLIER; // PA_3
 #ifndef TEST_MODE
-  brake_pressure_telem = readADC(BRAKE_ADC_CHANNEL) * 3.3f;
-  brake_pressed = brake_pressure_telem > BRAKE_PRESSURE_THRESHOLD_V;
+  // Digital brake switch: HIGH = pressed. Internal pulldown holds idle at 0.
+  brake_pressed = digitalRead(BRAKE_TELEM) == HIGH;
+  brake_pressure_telem = brake_pressed ? 3.3f : 0.0f;
   digital_data.brake_led =
       brake_pressed || (regen_in >= REGEN_BRAKE_LIGHT_THRESHOLD);
+
+#ifdef DEBUG_PRINTS
+  {
+    static uint32_t lastAgentLogMs = 0;
+    uint32_t nowMs = millis();
+    if (nowMs - lastAgentLogMs >= 1000) {
+      lastAgentLogMs = nowMs;
+      uint32_t dig = (uint32_t)digitalRead(BRAKE_TELEM);
+      uint32_t mode = (GPIOA->MODER >> 0) & 0x3U;
+      uint32_t pupd = (GPIOA->PUPDR >> 0) & 0x3U; // 2 = pulldown
+      uint32_t idr = (GPIOA->IDR >> 0) & 0x1U;
+      agentDebugLogBrakeDigital(dig, mode, pupd, idr);
+    }
+  }
+#endif
 #endif
 }
 
