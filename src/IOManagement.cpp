@@ -41,6 +41,10 @@ STM32TimerInterrupt IOTimer(TIM7);
 static volatile uint32_t pulseCount = 0;
 #define PULSES_PER_REV 48
 
+// Sample-and-delay debounce state for BRAKE_TELEM (updated in readIO).
+static bool brake_last_raw = false;
+static uint8_t brake_stable_count = 0;
+
 static void speedPulseISR() { pulseCount++; }
 
 void initSpeedCounter() {
@@ -120,7 +124,21 @@ void readIO() {
   current_in_telem = readADC(ADC_CHANNEL_8) * INA180_CURRENT_MULTIPLIER; // PA_3
 #ifndef TEST_MODE
   // Digital brake switch: HIGH = pressed. Internal pulldown holds idle at 0.
-  brake_pressed = digitalRead(BRAKE_TELEM) == HIGH;
+  // Sample-and-delay: require N stable samples before updating brake_pressed.
+  {
+    bool raw = digitalRead(BRAKE_TELEM) == HIGH;
+    if (raw != brake_last_raw) {
+      brake_stable_count = 0;
+      brake_last_raw = raw;
+    } else if (raw != brake_pressed) {
+      uint8_t need = raw ? BRAKE_DEBOUNCE_PRESS_SAMPLES
+                         : BRAKE_DEBOUNCE_RELEASE_SAMPLES;
+      if (++brake_stable_count >= need) {
+        brake_pressed = raw;
+        brake_stable_count = 0;
+      }
+    }
+  }
   brake_pressure_telem = brake_pressed ? 3.3f : 0.0f;
   digital_data.brake_led =
       brake_pressed || (regen_in >= REGEN_BRAKE_LIGHT_THRESHOLD);
