@@ -1,8 +1,7 @@
 #include "speed_calc.h"
+#include "IOManagement.h"
 
 volatile uint8_t speedPulses = 0;
-volatile float rpm = 0;
-volatile float mph = 0;
 
 volatile uint8_t previousPulses[ARRAY_SIZE];
 
@@ -13,6 +12,9 @@ void increment() {
 }
 
 void calculateSpeed(){
+    // RPM is always derived from physical MC_SPEED_SIG pulses so the state
+    // machine tracks the real motor speed, even when TEST_MODE is active.
+
     // Variable to track array update position
     static uint8_t calculationCounter = 0;
     static uint16_t runningSum = 0; 
@@ -37,4 +39,3 @@ void startSpeedCalculation() {
     // Calculates speed every 50 ms/50000 us
     speedCalcTimer.attachInterruptInterval(SPEED_CALC_INTERVAL_US, calculateSpeed);
 }   
-
