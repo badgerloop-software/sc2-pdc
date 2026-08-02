@@ -1,30 +1,27 @@
-#ifndef __IO_MANAGER_H__
-#define __IO_MANAGER_H__
+#ifndef __IO_MANAGEMENT_H__
+#define __IO_MANAGEMENT_H__
 
 #include <Arduino.h>
-#include "PID.h"
+#include <HardwareTimer.h>
+#ifndef MICROSEC_FORMAT
+#define MICROSEC_FORMAT TimerFormat_t::MICROSEC_FORMAT
+#endif
 #include "STM32TimerInterrupt_Generic.h"
 #include "adc.h"
-#include "const.h"
+#include "board_config.h"
 
-// Outputs
-#define MCU_DIR PB7
-#define MCU_ECO PB1
-
-// Inputs
-#define MCU_MC_ON PA10
-#define MCU_SPEED_SIG PA8
-#define PRK_BRK_TELEM PB4
-#define BRAKE_TELEM PA0
+// ------------- TYPES -------------
 
 struct Digital_Data {
-  bool direction : 1;    // output
-  bool mc_speed_sig : 1; // input
-  bool eco_mode : 1;     // output
-  bool mcu_mc_on : 1;    // input (physical motor controller key switch)
-  bool park_brake : 1;   // input (sourced from CAN when test board is used)
-  bool brake_led : 1;    // output (pedal brake or regen >= threshold)
+    bool direction : 1;
+    bool mc_speed_sig : 1;
+    bool eco_mode : 1;
+    bool mcu_mc_on : 1;
+    bool park_brake : 1;
+    bool brake_led : 1;
 };
+
+// ------------- GLOBALS -------------
 
 extern volatile Digital_Data digital_data;
 
@@ -42,19 +39,14 @@ extern volatile float brake_pressure_telem;
 extern volatile float mph;
 extern volatile float rpm;
 
-// initialize digital and analog pins
+// ------------- FUNCTIONS -------------
+
 void initIO();
-
-// setup rising-edge interrupt on MCU_SPEED_SIG (PA8) to count PWM pulses
 void initSpeedCounter();
-
-// read digital and analog inputs
 void readIO();
-
-// Set the value of output pins
 void set_direction(bool dir);
 void set_eco_mode(bool eco);
 void writeAccOut(float newAccOut);
 void writeRegenBrake(float newRegenBrake);
 
-#endif
+#endif  // __IO_MANAGEMENT_H__

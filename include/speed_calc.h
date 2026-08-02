@@ -1,23 +1,21 @@
 #ifndef __SPEED_CALC_H__
 #define __SPEED_CALC_H__
 
-#include "Arduino.h"
-#include "const.h"
-#include "IOManagement.h"
+#include <Arduino.h>
+#include <HardwareTimer.h>
+#ifndef MICROSEC_FORMAT
+#define MICROSEC_FORMAT TimerFormat_t::MICROSEC_FORMAT
+#endif
 #include "STM32TimerInterrupt_Generic.h"
+#include "board_config.h"
+#include "io_management.h"
 
-#define SPEED_CALC_INTERVAL_US 50000 // us
-#define ARRAY_SIZE 20 
-#define PULSES_PER_REV 48
-#define WHEEL_CIRCUMFERENCE 69 // inches
+// ------------- GLOBALS -------------
 
-#define MCU_SPEED_SIG PA8
+extern volatile uint8_t previousPulses[ARRAY_SIZE];
+
+// ------------- FUNCTIONS -------------
 
 void startSpeedCalculation();
 
-
-// Starts speed (RPM and MPH) calculations at specified interval
-extern volatile float mph;
-extern volatile uint8_t previousPulses[ARRAY_SIZE];
-
-#endif  
+#endif  // __SPEED_CALC_H__
