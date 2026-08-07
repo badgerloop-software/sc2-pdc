@@ -1,22 +1,23 @@
+// sc2-pdc main: Power Distribution and Controls on Nucleo-L432KC
+// Boot order: Serial, IO, speed calc, state machine - Loop sends CAN telem
+// The state machine runs on a timer interrupt, not in loop()
 #include <Arduino.h>
 
 #include "IOManagement.h"
-#include "adc.h"
 #include "canPDC.h"
 #include "const.h"
 #include "motor_control.h"
 #include "speed_calc.h"
 
-// For random
-#include <stdlib.h>
-#include <time.h>
-
 // DEBUG_TECHNIQUE selects the operating mode:
-//   0 = Production / normal operation (state machine + real I/O)
-//   1 = Random CAN echo (no state machine, sends random data for CAN testing)
+// 0 = production (state machine and real IO)
+// 1 = random CAN echo (no state machine, for bus tests)
 #define DEBUG_TECHNIQUE 0
 
+#if DEBUG_TECHNIQUE == 1
+#include <stdlib.h>
 int counter = 0;
+#endif
 
 CANPDC canBus(CAN1, DEF);
 
@@ -42,18 +43,16 @@ void randomizeData();
 void debugPrint();
 
 void randomizeData() {
-  // Use realistic ranges for each signal
-  acc_out = ((float)rand() / RAND_MAX);     // 0.0–1.0 (AnalogOut range)
-  regen_brake = ((float)rand() / RAND_MAX); // 0.0–1.0
+  acc_out = ((float)rand() / RAND_MAX);     // 0.0 to 1.0
+  regen_brake = ((float)rand() / RAND_MAX); // 0.0 to 1.0
   lv_12V_telem =
-      ((float)rand() / RAND_MAX) * 12.0; // 0–12V (after divider scaling)
-  lv_5V_telem = ((float)rand() / RAND_MAX) * 5.0;          // 0–5V
-  lv_5V_current = ((float)rand() / RAND_MAX) * 3.3;        // 0–3.3V
-  current_in_telem = ((float)rand() / RAND_MAX) * 3.3;     // 0–3.3V
+      ((float)rand() / RAND_MAX) * 12.0; // 0 to 12 V after divider scaling
+  lv_5V_telem = ((float)rand() / RAND_MAX) * 5.0;          // 0 to 5 V
+  lv_5V_current = ((float)rand() / RAND_MAX) * 3.3;        // 0 to 3.3 V
+  current_in_telem = ((float)rand() / RAND_MAX) * 3.3;     // 0 to 3.3 V
   brake_pressed = rand() % 2;
   digital_data.brake_led = brake_pressed;
 
-  // Random digital data
   digital_data.direction = rand() % 2;
   digital_data.mc_speed_sig = rand() % 2;
   digital_data.eco_mode = rand() % 2;
@@ -81,7 +80,6 @@ void debugPrint() {
 }
 #endif
 
-// setup
 void setup() {
   Serial.begin(115200);
 #ifdef DEBUG_PRINTS
@@ -92,23 +90,18 @@ void setup() {
   startSpeedCalculation();
 
 #if DEBUG_TECHNIQUE == 0
-  // Production mode: start the state machine
+  // Start PARK/IDLE/FORWARD/REVERSE on TIM2
   initPDCState();
 #elif DEBUG_TECHNIQUE == 1
-  // Random echo mode: seed RNG, no state machine
-  // Many embedded boards don't have a real-time clock, so time(NULL)
-  // can return 0 every boot. Use millis() so the seed varies based on boot
-  // time.
+  // Seed with millis(), no real time clock so time(NULL) is always 0
   srand(millis());
   randomizeData();
 #endif
 }
 
-// loop
 void loop() {
 #if DEBUG_TECHNIQUE == 0
-  // Production: state machine runs via its timer interrupt.
-  // Just send data and process CAN queue.
+  // State machine runs on its timer, loop() only sends CAN and reads RX
 #ifdef DEBUG_PRINTS
   {
     static uint32_t lastDebugMs = 0;
@@ -128,12 +121,10 @@ void loop() {
   }
 #endif
 #elif DEBUG_TECHNIQUE == 1
-  // Random echo: periodically regenerate random values
   if (counter >= COUNTER_EXP) {
     randomizeData();
     debugPrint();
     counter = 0;
-    // Show what we received from the steering wheel / test board
 #ifdef DEBUG_PRINTS
     Serial.printf("Received forwardAndReverse: %i\n", forwardAndReverse);
 #endif

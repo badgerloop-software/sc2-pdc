@@ -2,7 +2,6 @@
 #define __IO_MANAGER_H__
 
 #include <Arduino.h>
-#include "PID.h"
 #include "STM32TimerInterrupt_Generic.h"
 #include "adc.h"
 #include "const.h"
@@ -21,11 +20,12 @@ struct Digital_Data {
   bool direction : 1;    // output
   bool mc_speed_sig : 1; // input
   bool eco_mode : 1;     // output
-  bool mcu_mc_on : 1;    // input (physical motor controller key switch)
-  bool park_brake : 1;   // input (sourced from CAN when test board is used)
+  bool mcu_mc_on : 1;    // input (motor controller power signal)
+  bool park_brake : 1;   // always false in production (sensor removed)
   bool brake_led : 1;    // output (pedal brake or regen >= threshold)
 };
 
+// Shared telem: IOManagement owns most but speed_calc writes rpm and mph
 extern volatile Digital_Data digital_data;
 
 extern volatile uint16_t acc_in_raw;
@@ -42,16 +42,8 @@ extern volatile float brake_pressure_telem;
 extern volatile float mph;
 extern volatile float rpm;
 
-// initialize digital and analog pins
 void initIO();
-
-// setup rising-edge interrupt on MCU_SPEED_SIG (PA8) to count PWM pulses
-void initSpeedCounter();
-
-// read digital and analog inputs
 void readIO();
-
-// Set the value of output pins
 void set_direction(bool dir);
 void set_eco_mode(bool eco);
 void writeAccOut(float newAccOut);
