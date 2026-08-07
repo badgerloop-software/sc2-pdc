@@ -1,6 +1,6 @@
 # sc2-pdc
 
-Firmware for Power Distribution and Controls on a Nucleo-L432KC.
+Firmware for Nucleo-L432KC based Power Distribution and Controls board.
 
 ## Build
 
@@ -25,9 +25,9 @@ Set these flags in `include/const.h`. Set `DEBUG_TECHNIQUE` in `main.cpp`.
 | `TEST_MODE` | Use the CAN bounce test board path. |
 | `DEBUG_TECHNIQUE` | `0` is production. `1` sends random CAN echo data. |
 
-## Park brake
+## Parking brake
 
-The park-brake sensor is not on the car. The firmware sets `park_brake` to false. The controller leaves PARK and runs.
+The parking brake sensor is not on the car. The firmware sets `park_brake` to false. The controller leaves PARK and runs.
 
 ## Pins
 
