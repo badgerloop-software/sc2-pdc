@@ -1,3 +1,6 @@
+// canPDC: CAN RX from steering wheel, CAN TX of PDC telem
+// RX: 0x300 direction, 0x301 regen, 0x302 throttle, 0x303 eco/pwr
+// TX: 0x200 to 0x208 (accel, regen, LV telem, brake, digital pack, mph)
 #include "canPDC.h"
 #include "const.h"
 
@@ -14,15 +17,15 @@ void CANPDC::readHandler(CAN_message_t msg) {
   switch (msg.id) {
   case FORWARD_AND_REVERSE_ID: { // 0x300
     // Byte 0 bit layout per CAN spec:
-    //   bit 0: headlight, bit 1: left_blink, bit 2: right_blink,
-    //   bit 3: direction_switch, bit 4: horn
+    // bit 0: headlight, bit 1: left_blink, bit 2: right_blink,
+    // bit 3: direction_switch, bit 4: horn
     // bit 3 direction_switch: 1 = forward, 0 = reverse (steering wheel)
     bool forward_selected = ((msg.buf[0] >> 3) & 1) != 0;
     forwardAndReverse = forward_selected ? FORWARD_VALUE : REVERSE_VALUE;
     break;
   }
 
-  case REGEN_BRAKE_INPUT_ID: { // 0x301 regen brake from steering wheel (normalized 0.0–1.0)
+  case REGEN_BRAKE_INPUT_ID: { // 0x301 regen from steering wheel (0.0 to 1.0)
     if (msg.len >= sizeof(float)) {
       float regen_val = 0.0f;
       memcpy((void *)&regen_val, msg.buf, sizeof(float));
@@ -36,12 +39,12 @@ void CANPDC::readHandler(CAN_message_t msg) {
   }
 
 #ifndef TEST_MODE
-  case THROTTLE_INPUT_ID: { // 0x302 uint16 throttle command in production.
+  case THROTTLE_INPUT_ID: { // 0x302 uint16 throttle command in production
     uint16_t throttle_raw = 0;
     memcpy((void *)&throttle_raw, msg.buf, sizeof(uint16_t));
     acc_in_raw = throttle_raw;
 
-    // Steering wheel sends calibrated counts in [0, THROTTLE_SENT_MAX].
+    // Steering wheel sends calibrated counts in [0, THROTTLE_SENT_MAX]
     float normalized = (float)throttle_raw / (float)THROTTLE_SENT_MAX;
     if (normalized < 0.0f) {
       normalized = 0.0f;
@@ -62,8 +65,7 @@ void CANPDC::readHandler(CAN_message_t msg) {
 #endif
 
 #ifdef TEST_MODE
-  case 0x209: // acc_in — sent by test board simulating the pedal.
-              // Only used in TEST_MODE; in production 0x302 is used.
+  case 0x209: // acc_in from the test board (TEST_MODE only; production uses 0x302)
     memcpy((void *)&acc_in, msg.buf, sizeof(float));
     break;
 #endif
@@ -74,6 +76,7 @@ void CANPDC::readHandler(CAN_message_t msg) {
 }
 
 void CANPDC::sendPDCData() {
+  // Broadcast telem for dash, lighting, and logging
   this->sendMessage(0x200, (void *)&acc_out, sizeof(float));
   this->sendMessage(0x201, (void *)&regen_brake, sizeof(float));
   this->sendMessage(0x202, (void *)&lv_12V_telem, sizeof(float));
@@ -83,6 +86,5 @@ void CANPDC::sendPDCData() {
   this->sendMessage(0x206, (void *)&brake_pressure_telem, sizeof(float));
   this->sendMessage(0x207, (void *)&digital_data, sizeof(digital_data));
   this->sendMessage(0x208, (void *)&mph, sizeof(float));
-  // 0x209/0x302 are INPUTs received from the pedal/test board — do not
-  // re-broadcast.
+  // 0x209 and 0x302 are inputs don't send them again
 }
