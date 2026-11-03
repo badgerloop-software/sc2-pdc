@@ -10,25 +10,26 @@ static uint8_t lastDriveMode = 0xFF;
 
 static constexpr uint16_t THROTTLE_SENT_MAX = 4095U;
 
-CANPDC::CANPDC(CAN_TypeDef *canPort, CAN_PINS pins, int frequency)
-    : CANManager(canPort, pins, frequency) {};
+CANPDC::CANPDC(const struct device * canDevice, uint32_t frequency)
+    : ZephyrCAN(canDevice, arr_ids, sizeof(ARR_IDS) / sizeof(ARR_IDS[0]), frequency) {};
 
-void CANPDC::readHandler(CAN_message_t msg) {
-  switch (msg.id) {
+    //  inherited from ZephyrCAN, this function is called when a CAN message is received
+void CANPDC::readHandler(struct can_frame * msg) {
+  switch (msg->can_id) {
   case FORWARD_AND_REVERSE_ID: { // 0x300
     // Byte 0 bit layout per CAN spec:
     // bit 0: headlight, bit 1: left_blink, bit 2: right_blink,
     // bit 3: direction_switch, bit 4: horn
     // bit 3 direction_switch: 1 = forward, 0 = reverse (steering wheel)
-    bool forward_selected = ((msg.buf[0] >> 3) & 1) != 0;
+    bool forward_selected = ((msg->data[0] >> 3) & 1) != 0;
     forwardAndReverse = forward_selected ? FORWARD_VALUE : REVERSE_VALUE;
     break;
   }
 
   case REGEN_BRAKE_INPUT_ID: { // 0x301 regen from steering wheel (0.0 to 1.0)
-    if (msg.len >= sizeof(float)) {
+    if (msg->can_dlc >= sizeof(float)) {
       float regen_val = 0.0f;
-      memcpy((void *)&regen_val, msg.buf, sizeof(float));
+      memcpy((void *)&regen_val, msg->data, sizeof(float));
       if (regen_val < 0.0f)
         regen_val = 0.0f;
       else if (regen_val > 1.0f)
@@ -41,7 +42,7 @@ void CANPDC::readHandler(CAN_message_t msg) {
 #ifndef TEST_MODE
   case THROTTLE_INPUT_ID: { // 0x302 uint16 throttle command in production
     uint16_t throttle_raw = 0;
-    memcpy((void *)&throttle_raw, msg.buf, sizeof(uint16_t));
+    memcpy((void *)&throttle_raw, msg->data, sizeof(uint16_t));
     acc_in_raw = throttle_raw;
 
     // Steering wheel sends calibrated counts in [0, THROTTLE_SENT_MAX]
@@ -56,8 +57,8 @@ void CANPDC::readHandler(CAN_message_t msg) {
   }
 
   case DRIVE_MODE_INPUT_ID: { // 0x303 eco/pwr from steering wheel (0=Eco, 1=Pwr)
-    if (msg.len >= 1 && msg.buf[0] != lastDriveMode) {
-      lastDriveMode = msg.buf[0];
+    if (msg->can_dlc >= 1 && msg->data[0] != lastDriveMode) {
+      lastDriveMode = msg->data[0];
       set_eco_mode(lastDriveMode == 0);
     }
     break;
@@ -66,7 +67,7 @@ void CANPDC::readHandler(CAN_message_t msg) {
 
 #ifdef TEST_MODE
   case 0x209: // acc_in from the test board (TEST_MODE only; production uses 0x302)
-    memcpy((void *)&acc_in, msg.buf, sizeof(float));
+    memcpy((void *)&acc_in, msg->data, sizeof(float));
     break;
 #endif
 
