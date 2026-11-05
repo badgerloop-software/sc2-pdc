@@ -5,7 +5,7 @@
 
 volatile Digital_Data digital_data;
 
-volatile uint16_t acc_in_raw = 0;
+volatile std::uint16_t acc_in_raw = 0;
 volatile float acc_in = 0;
 volatile float acc_out = 0;
 volatile float regen_in = 0;

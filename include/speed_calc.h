@@ -1,9 +1,9 @@
 #ifndef __SPEED_CALC_H__
 #define __SPEED_CALC_H__
 
-#include "Arduino.h"
+//#include "Arduino.h"
 #include "IOManagement.h"
-#include "STM32TimerInterrupt_Generic.h"
+//#include "STM32TimerInterrupt_Generic.h"
 #include "const.h"
 
 // MCU_SPEED_SIG is defined in IOManagement.h (PA8)
@@ -14,5 +14,7 @@
 
 // Writes rpm and mph (declared in IOManagement.h) from MCU_SPEED_SIG pulses
 void startSpeedCalculation();
+void increment();
+
 
 #endif

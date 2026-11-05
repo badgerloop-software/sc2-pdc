@@ -2,7 +2,7 @@
 #define __CAN_PDC_H__
 
 #include "IOManagement.h"
-#include "canmanager.h"
+//#include "canmanager.h"
 #include "zephyrcan.h"
 
 // Macros for the CAN message IDs

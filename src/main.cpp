@@ -1,10 +1,10 @@
 // sc2-pdc main: Power Distribution and Controls on Nucleo-L432KC
 // Boot order: Serial, IO, speed calc, state machine - Loop sends CAN telem
 // The state machine runs on a timer interrupt, not in loop()
-#include <Arduino.h>
+//#include <Arduino.h>
 
 #include "IOManagement.h"
-#include "canPDC.h"
+//#include "canPDC.h"
 #include "const.h"
 #include "motor_control.h"
 #include "speed_calc.h"
