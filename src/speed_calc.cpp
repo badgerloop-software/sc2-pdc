@@ -46,7 +46,6 @@ void startSpeedCalculation() {
     gpio_pin_configure_dt(&intr_pin, GPIO_INPUT);
     gpio_init_callback(&mcu_speed_sig_cb, intr_handler, BIT(intr_pin.pin));
     gpio_add_callback(&mcu_speed_sig_cb, increment, BIT(intr_pin.pin));
-    gpio_pin_interrupt_configure_dt(&intr_pin, GPIO_INT_EDGE_RISING); 
-
-   speedCalcTimer.start(SPEED_CALC_INTERVAL_US, SPEED_CALC_INTERVAL_US);
+    gpio_pin_interrupt_configure_dt(&intr_pin, GPIO_INT_EDGE_RISING);
+   k_timer_start(&speedCalcTimer, K_USEC(SPEED_CALC_INTERVAL_US), K_USEC(SPEED_CALC_INTERVAL_US));
 }
