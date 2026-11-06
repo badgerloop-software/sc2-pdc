@@ -1,10 +1,8 @@
 #ifndef __MOTOR_CONTROL_H__
 #define __MOTOR_CONTROL_H__
 
-#include "Arduino.h"
 #include "const.h"
 #include "IOManagement.h"
-#include "STM32TimerInterrupt_Generic.h"
 #include "canPDC.h"
 
 void initPDCState();

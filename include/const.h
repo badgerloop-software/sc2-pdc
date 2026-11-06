@@ -1,5 +1,6 @@
 #ifndef __CONST_H__
 #define __CONST_H__
+#include <stdint.h>
 
 /**
  * Debugging Techniques:
