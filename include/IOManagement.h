@@ -1,9 +1,7 @@
 #ifndef __IO_MANAGER_H__
 #define __IO_MANAGER_H__
 
-//#include <Arduino.h>
-//#include "STM32TimerInterrupt_Generic.h"
-//#include "adc.h"
+
 #include "const.h"
 
 // Outputs

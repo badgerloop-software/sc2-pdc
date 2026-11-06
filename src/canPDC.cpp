@@ -13,7 +13,6 @@ static constexpr uint16_t THROTTLE_SENT_MAX = 4095U;
 CANPDC::CANPDC(const struct device * canDevice, uint32_t frequency)
     : ZephyrCAN(canDevice, arr_ids, sizeof(ARR_IDS) / sizeof(ARR_IDS[0]), frequency) {};
 
-    //  inherited from ZephyrCAN, this function is called when a CAN message is received
 void CANPDC::readHandler(struct can_frame * msg) {
   switch (msg->can_id) {
   case FORWARD_AND_REVERSE_ID: { // 0x300
